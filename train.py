@@ -25,8 +25,8 @@ def options():
     parser.add_argument("--dataset_path",type=str,default='data/')
     parser.add_argument("--voxel_size",type=float,default=0.3)
     parser.add_argument("--pcd_sample",type=int,default=4096)
-    parser.add_argument("--max_deg",type=float,default=30)
-    parser.add_argument("--max_tran",type=float,default=3.0)
+    parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
+    parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
     parser.add_argument("--mag_randomly",type=bool,default=True)
     # dataloader
     parser.add_argument("--batch_size",type=int,default=2)
@@ -44,7 +44,7 @@ def options():
     parser.add_argument("--weight_decay",type=float,default=1e-4)
     parser.add_argument("--lr_exp_decay",type=float,default=0.985)
     # setting
-    parser.add_argument("--scale",type=float,default=30.0,help='scale factor of pcd normlization in loss')
+    parser.add_argument("--scale",type=float,default=50.0,help='scale factor of pcd normlization in loss')
     parser.add_argument("--inner_iter",type=int,default=6,help='inner iter of calibnet')
     parser.add_argument("--alpha",type=float,default=1.0,help='weight of photo loss')
     parser.add_argument("--beta",type=float,default=0.15,help='weight of chamfer loss')
@@ -87,7 +87,7 @@ def val(model:CalibNet,val_loader:DataLoader):
     loss_dx = total_dR + total_dT
     tqdm_console.set_postfix_str('dR:{:.4f}, dT:{:.4f}, dx:{:.4f}'.format(total_dR,total_dT,loss_dx))
     tqdm_console.close()
-    return loss_dx
+    return loss_dx, total_dR, total_dT
 
 
 def train(args,train_loader:DataLoader,val_loader:DataLoader):
@@ -113,7 +113,8 @@ def train(args,train_loader:DataLoader,val_loader:DataLoader):
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=args.lr_exp_decay)
     log_mode = 'a' if args.resume else 'w'
     logger = get_logger("Train",args.log,mode=log_mode)
-    logger.debug(args)
+    if not args.resume:
+        logger.debug(args)
     photo_loss = loss_utils.Photo_Loss(args.scale)
     chamfer_loss = loss_utils.ChamferDistanceLoss(args.scale,'sum')
     alpha = float(args.alpha)
@@ -158,7 +159,7 @@ def train(args,train_loader:DataLoader,val_loader:DataLoader):
         tqdm_console.close()
         logger.info('Epoch {:03d}|{:03d}, loss:{:.6f}'.format(epoch+1,args.epoch,total_loss))
         scheduler.step()
-        loss_dx = val(model,val_loader)  # float 
+        loss_dx, loss_dR, loss_dT = val(model,val_loader)  # float 
         if loss_dx < min_loss:
             min_loss = loss_dx
             torch.save(dict(
@@ -167,13 +168,14 @@ def train(args,train_loader:DataLoader,val_loader:DataLoader):
                 min_loss=min_loss,
                 epoch=epoch
             ),os.path.join(args.checkpoint_dir,'{name}_best.pth'.format(name=args.checkpoint_name)))
+            logger.info('Best model saved (Epoch {:d})'.format(epoch+1))
         torch.save(dict(
                 model=model.state_dict(),
                 optimizer=optimizer.state_dict(),
                 min_loss=min_loss,
                 epoch=epoch
             ),os.path.join(args.checkpoint_dir,'{name}_last.pth'.format(name=args.checkpoint_name)))
-        logger.info('Evaluate loss_dx:{:.6f}, min_loss_dx:{:.6f}'.format(loss_dx,min_loss))
+        logger.info('Evaluate loss_dx:{:.6f}, loss_dR:{:.6f}, loss_dT:{:.6f}'.format(loss_dx,loss_dR,loss_dT))
             
             
             

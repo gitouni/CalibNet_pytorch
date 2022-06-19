@@ -59,7 +59,7 @@ def geodesic_distance(x:torch.Tensor,gt:torch.Tensor)->tuple:
     T = x[:,:3,3]  # (B,3)
     gtR = gt[:,:3,:3]  # (B,3,3)
     gtT = gt[:,:3,3]  # (B,3)
-    dR = 1/sqrt(2)*so3.log(R.transpose(1,2).bmm(gtR)).mean()  # (B,)
+    dR = torch.linalg.norm(1/sqrt(2)*so3.log(R.transpose(1,2).bmm(gtR)).mean(dim=0))  # (B,)
     dT = F.mse_loss(T,gtT,reduction='mean')  # (B,)
     return dR, dT
 
