@@ -11,6 +11,7 @@ from utils import transform
 def check_length(root:str,save_name='data_len.json'):
     seq_dir = os.path.join(root,'sequences')
     seq_list = os.listdir(seq_dir)
+    seq_list.sort()
     dict_len = dict()
     for seq in seq_list:
         len_velo = len(os.listdir(os.path.join(seq_dir,seq,'velodyne')))
@@ -102,7 +103,14 @@ class BaseKITTIDataset(Dataset):
             check_length(basedir,meta_json)
         with open(os.path.join(basedir,meta_json),'r')as f:
             dict_len = json.load(f)
-        self.kitti_datalist = [pykitti.odometry(basedir,seq,frames=range(0,dict_len[seq]-(dict_len[seq]%batch_size),skip_frame)) for seq in seqs]  
+        frame_list = []
+        for seq in seqs:
+            frame = list(range(0,dict_len[seq],skip_frame))
+            cut_index = len(frame)%batch_size
+            if cut_index > 0:
+                frame = frame[:-cut_index]
+            frame_list.append(frame)
+        self.kitti_datalist = [pykitti.odometry(basedir,seq,frames=frame) for seq,frame in zip(seqs,frame_list)]  
         # concat images from different seq into one batch will cause error
         self.cam_id = cam_id
         for seq,obj in zip(seqs,self.kitti_datalist):
@@ -188,6 +196,7 @@ class KITTI_perturb(Dataset):
         data['depth_img'] = self.pooling(data['depth_img'][None,...])
         data['uncalibed_depth_img'] = self.pooling(data['uncalibed_depth_img'][None,...])
         return data
+        
         
 if __name__ == "__main__":
     base_dataset = BaseKITTIDataset('data',1,seqs=['00','01'],skip_frame=3)

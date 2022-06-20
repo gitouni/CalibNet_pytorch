@@ -33,15 +33,15 @@ def options():
     parser.add_argument("--pin_memory",type=bool,default=True,help='set it to False if your memory is insufficient')
     # schedule
     parser.add_argument("--device",type=str,default='cuda:0')
-    parser.add_argument("--resume",type=str,default='')
-    parser.add_argument("--epoch",type=int,default=200)
-    parser.add_argument("--log",type=str,default='log/train.log')
+    parser.add_argument("--resume",type=str,default='checkpoint/cam2_fewdata_last.pth')
+    parser.add_argument("--epoch",type=int,default=100)
+    parser.add_argument("--log_dir",default='log/')
     parser.add_argument("--checkpoint_dir",type=str,default="checkpoint/")
-    parser.add_argument("--checkpoint_name",type=str,default='model')
+    parser.add_argument("--checkpoint_name",type=str,default='cam2_fewdata')
     parser.add_argument("--lr0",type=float,default=0.001)
     parser.add_argument("--momentum",type=float,default=0.9)
     parser.add_argument("--weight_decay",type=float,default=1e-4)
-    parser.add_argument("--lr_exp_decay",type=float,default=0.985)
+    parser.add_argument("--lr_exp_decay",type=float,default=0.98)
     # setting
     parser.add_argument("--scale",type=float,default=50.0,help='scale factor of pcd normlization in loss')
     parser.add_argument("--inner_iter",type=int,default=6,help='inner iter of calibnet')
@@ -89,17 +89,15 @@ def val(model:CalibNet,val_loader:DataLoader):
     return loss_dx, total_dR, total_dT
 
 
-def train(args,train_loader:DataLoader,val_loader:DataLoader):
+def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
     model = CalibNet(backbone_pretrained=False)
     optimizer = torch.optim.SGD(model.parameters(),args.lr0,args.momentum,weight_decay=args.weight_decay)
-    if args.resume:
-        chkpt = torch.load(args.resume,map_location='cpu')
+    if chkpt is not None:
         model.load_state_dict(chkpt['model'])
         optimizer.load_state_dict(chkpt['optimizer'])
         start_epoch = chkpt['epoch'] + 1
         min_loss = chkpt['min_loss']
         log_mode = 'a'
-        del chkpt
     else:
         start_epoch = 0
         min_loss = float('inf')
@@ -110,15 +108,18 @@ def train(args,train_loader:DataLoader,val_loader:DataLoader):
     device = torch.device(args.device)
     model.to(device)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=args.lr_exp_decay)
-    log_mode = 'a' if args.resume else 'w'
-    logger = get_logger("Train",args.log,mode=log_mode)
-    if not args.resume:
+    log_mode = 'a' if chkpt is not None else 'w'
+    logger = get_logger("Train",os.path.join(args.log_dir,args.checkpoint_name+'.log'),mode=log_mode)
+    if chkpt is None:
         logger.debug(args)
+        print_highlight('Start Training')
+    else:
+        print_highlight('Resume from epoch {:d}'.format(start_epoch+1))
+    del chkpt  # free memory
     photo_loss = loss_utils.Photo_Loss(args.scale)
     chamfer_loss = loss_utils.ChamferDistanceLoss(args.scale,'sum')
     alpha = float(args.alpha)
     beta = float(args.beta)
-    print_highlight('Start Training')
     for epoch in range(start_epoch,args.epoch):
         model.train()
         tqdm_console = tqdm(total=len(train_loader),desc='Train')
@@ -165,14 +166,18 @@ def train(args,train_loader:DataLoader,val_loader:DataLoader):
                 model=model.state_dict(),
                 optimizer=optimizer.state_dict(),
                 min_loss=min_loss,
-                epoch=epoch
+                epoch=epoch,
+                args=args.__dict__,
+                config=CONFIG
             ),os.path.join(args.checkpoint_dir,'{name}_best.pth'.format(name=args.checkpoint_name)))
             logger.info('Best model saved (Epoch {:d})'.format(epoch+1))
         torch.save(dict(
                 model=model.state_dict(),
                 optimizer=optimizer.state_dict(),
                 min_loss=min_loss,
-                epoch=epoch
+                epoch=epoch,
+                args=args.__dict__,
+                config=CONFIG
             ),os.path.join(args.checkpoint_dir,'{name}_last.pth'.format(name=args.checkpoint_name)))
         logger.info('Evaluate loss_dx:{:.6f}, loss_dR:{:.6f}, loss_dT:{:.6f}'.format(loss_dx,loss_dR,loss_dT))
             
@@ -181,10 +186,17 @@ def train(args,train_loader:DataLoader,val_loader:DataLoader):
 
 if __name__ == "__main__":
     args = options()
-    os.makedirs('log',exist_ok=True)
+    os.makedirs(args.log_dir,exist_ok=True)
     os.makedirs(args.checkpoint_dir,exist_ok=True)
     with open(args.config,'r')as f:
         CONFIG = yaml.load(f,yaml.SafeLoader)
+    assert isinstance(CONFIG,dict), 'Unknown config format!'
+    if args.resume:
+        chkpt = torch.load(args.resume,map_location='cpu')
+        CONFIG.update(chkpt['config'])
+        args.__dict__.update(chkpt['args'])
+    else:
+        chkpt = None
     print_highlight('args have been received, please wait for dataloader...')
     train_split = [str(index).rjust(2,'0') for index in CONFIG['dataset']['train']]
     val_split = [str(index).rjust(2,'0') for index in CONFIG['dataset']['val']]
@@ -206,4 +218,4 @@ if __name__ == "__main__":
     # dataloader
     train_dataloader = DataLoader(train_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers,pin_memory=args.pin_memory,drop_last=train_drop_last)
     val_dataloder = DataLoader(val_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers,pin_memory=args.pin_memory,drop_last=val_drop_last)
-    train(args,train_dataloader,val_dataloder)
+    train(args,chkpt,train_dataloader,val_dataloder)

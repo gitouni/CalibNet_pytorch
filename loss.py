@@ -4,7 +4,8 @@ from torch import nn
 from math import sqrt
 from utils import so3
 from losses.chamfer_loss import chamfer_distance
-  
+from scipy.spatial.transform import Rotation
+import numpy as np
     
 class Photo_Loss(nn.Module):
     def __init__(self,scale=1.0,reduction='mean'):
@@ -59,7 +60,25 @@ def geodesic_distance(x:torch.Tensor,gt:torch.Tensor)->tuple:
     T = x[:,:3,3]  # (B,3)
     gtR = gt[:,:3,:3]  # (B,3,3)
     gtT = gt[:,:3,3]  # (B,3)
-    dR = torch.linalg.norm(1/sqrt(2)*so3.log(R.transpose(1,2).bmm(gtR)).mean(dim=0))  # (B,)
-    dT = F.mse_loss(T,gtT,reduction='mean')  # (B,)
+    dR = so3.log(R.transpose(1,2).bmm(gtR)) # (B,3)
+    dR = F.mse_loss(dR,torch.zeros_like(dR).to(dR),reduction='none').mean(dim=1)  # (B,3) -> (B,1)
+    dR = torch.sqrt(dR).mean(dim=0)  # (B,1) -> (1,)  Rotation RMSE (mean in batch)
+    dT = F.mse_loss(T,gtT,reduction='none').mean(dim=1) # (B,3) -> (B,1)
+    dT = torch.sqrt(dT).mean(dim=0)  # (B,1) -> (1,) Translation RMSE (mean in batch)
     return dR, dT
 
+def gt2euler(gt:np.ndarray):
+    """gt transformer to euler anlges and translation
+
+    Args:
+        gt (np.ndarray): 4x4
+
+    Returns:
+        angle_gt, trans_gt: (3,1),(3,1)
+    """
+    R_gt = gt[:3, :3]
+    euler_angle = Rotation.from_matrix(R_gt)
+    anglez_gt, angley_gt, anglex_gt = euler_angle.as_euler('zyx')
+    angle_gt = np.array([anglex_gt, angley_gt, anglez_gt])
+    trans_gt_t = -R_gt @ gt[:3, 3]
+    return angle_gt, trans_gt_t

@@ -1,6 +1,6 @@
 dataset:
-  train: [1,2,3,4,5,6]
-  val: [7]
+  train: [0,1,2,3,4,5]
+  val: [6,7]
   test: [8,9,10]
-  skip_frame: 10
+  skip_frame: 50
   cam_id: 2  # (2 or 3)
