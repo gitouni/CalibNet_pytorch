@@ -7,7 +7,7 @@ original paper: [CalibNet: Self-Supervised Extrinsic Calibration using 3D Spatia
 
 Code about chamfer Loss is copied from [PCRNet](https://github.com/vinits5/pcrnet_pytorch/tree/master/pcrnet/losses)
 ## Recommended Environment
-Windows 10 / Ubuntu 18.04 / Ubuntu 20.04 (open3d cannot installed normally on Ubuntu 16.04 or a earlier archive)
+Windows 10 / Ubuntu 18.04 / Ubuntu 20.04
 
 Pytorch >= 1.8
 
