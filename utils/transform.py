@@ -42,8 +42,8 @@ class RandomTransformSE3:
         # x: [1, 6]
         g = se3.exp(x).to(p0)   # [1, 4, 4]
         gt = se3.exp(-x).to(p0) # [1, 4, 4]
-        self.gt = gt.squeeze(0) #  gt: p0 -> p1
-        self.igt = g.squeeze(0) # igt: p1 -> p0
+        self.gt = gt.squeeze(0) #  gt: p1 -> p0
+        self.igt = g.squeeze(0) # igt: p0 -> p1
         if self.concat:
             return torch.cat([se3.transform(g, p0[:3,:]),so3.transform(g[:,:3,:3], p0[3:,:])], dim=1)  # [1, 4, 4] x [6, N] -> [6, N]
         else:
