@@ -46,24 +46,21 @@ class ChamferDistanceLoss(nn.Module):
         return self.forward(template,source)
 
 
-def geodesic_distance(x:torch.Tensor,gt:torch.Tensor)->tuple:
+def geodesic_distance(x:torch.Tensor,)->tuple:
     """geodesic distance for evaluation
 
     Args:
         x (torch.Tensor): (B,4,4)
-        gt (torch.Tensor): (B,4,4)
 
     Returns:
         torch.Tensor(1),torch.Tensor(1): distance of component R and T 
     """
-    R = x[:,:3,:3]  # (B,3,3)
-    T = x[:,:3,3]  # (B,3)
-    gtR = gt[:,:3,:3]  # (B,3,3)
-    gtT = gt[:,:3,3]  # (B,3)
-    dR = so3.log(R.transpose(1,2).bmm(gtR)) # (B,3)
+    R = x[:,:3,:3]  # (B,3,3) rotation
+    T = x[:,:3,3]  # (B,3) translation
+    dR = so3.log(R) # (B,3)
     dR = F.mse_loss(dR,torch.zeros_like(dR).to(dR),reduction='none').mean(dim=1)  # (B,3) -> (B,1)
     dR = torch.sqrt(dR).mean(dim=0)  # (B,1) -> (1,)  Rotation RMSE (mean in batch)
-    dT = F.mse_loss(T,gtT,reduction='none').mean(dim=1) # (B,3) -> (B,1)
+    dT = F.mse_loss(T,torch.zeros_like(T).to(T),reduction='none').mean(dim=1) # (B,3) -> (B,1)
     dT = torch.sqrt(dT).mean(dim=0)  # (B,1) -> (1,) Translation RMSE (mean in batch)
     return dR, dT
 

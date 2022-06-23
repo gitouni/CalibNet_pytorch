@@ -40,11 +40,12 @@ class Aggregation(nn.Module):
         x_rot = self.rot_drop(x_rot)  # (19.6)
         x_rot = self.rot_pool(x_rot)
         x_rot = self.fc2(x_rot.view(x_rot.shape[0],-1))
-        return x_tr, x_rot
+        return x_rot, x_tr
 
 class CalibNet(nn.Module):
-    def __init__(self,backbone_pretrained=True):
+    def __init__(self,backbone_pretrained=True,depth_scale=100.0):
         super(CalibNet,self).__init__()
+        self.scale = depth_scale
         self.rgb_resnet = resnet18(inplanes=3,planes=64)  # outplanes = 512
         self.depth_resnet = nn.Sequential(
             nn.MaxPool2d(kernel_size=5,stride=1,padding=2),  # outplanes = 256
@@ -54,16 +55,19 @@ class CalibNet(nn.Module):
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         if backbone_pretrained:
             self.rgb_resnet.load_state_dict(torch.load("resnetV1C.pth")['state_dict'],strict=False)
+        self.out_rot = nn.Tanh()
+        self.out_tsl = nn.Tanh()
         self.to(self.device)
     def forward(self,rgb:torch.Tensor,depth:torch.Tensor):
         # rgb: [B,3,H,W]
         # depth: [B,1,H,W]
         x1,x2 = rgb,depth
+        x2 /= self.scale
         x1 = self.rgb_resnet(x1)[-1]
         x2 = self.depth_resnet(x2)[-1]
         feat = torch.cat((x1,x2),dim=1)  # [B,C1+C2,H,W]
-        x_tr, x_rot =  self.aggregation(feat)
-        return x_tr, x_rot 
+        x_rot, x_tr =  self.aggregation(feat)
+        return self.out_rot(x_rot), self.out_tsl(x_tr) 
 if __name__=="__main__":
     x = (torch.rand(2,3,1242,375).cuda(),torch.rand(2,1,1242,375).cuda())
     model = CalibNet(backbone_pretrained=False).cuda()

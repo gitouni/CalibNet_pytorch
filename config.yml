@@ -2,5 +2,8 @@ dataset:
   train: [0,1,2,3,4,5]
   val: [6,7]
   test: [8,9,10]
-  skip_frame: 50
+  skip_frame: 30
   cam_id: 2  # (2 or 3)
+
+model:
+  depth_scale: 100.0
