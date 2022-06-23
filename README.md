@@ -15,8 +15,6 @@ CUDA 11.1
 
 Python >= 3.8
 
-Pytorch should be installed independently, other `pip` packages plese use the following command to install:
-
 `pip3 install requirements.txt`
 
 ### _Tips 1_ (skip it if you don't have any issues)
@@ -72,7 +70,7 @@ ln -s /PATH/TO/MyData/dataset data
 ### Train
 The following command is fit with a 12GB GPU and 16GB CPU memory.
 ```bash
-python3 train.py --batch_size=2 --epoch=100 --inner_iter=6 --pcd_sample=4096
+python3 train.py --batch_size=2 --epoch=100 --inner_iter=1 --pcd_sample=4096
 ```
 
 ### Setting
