@@ -19,7 +19,7 @@ Python >= 3.8
 
 ### _Tips 1_ (skip it if you don't have any issues)
 
-If your PC dose not have CUDA and Pytorch is installed through conda, please use neural_pytorch to implement `chamfer_loss`. ([detailes](https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#))
+If your PC dose not have CUDA and Pytorch is installed through conda, please use `pip install neural_pytorch` to implement `chamfer_loss`. ([detailes](https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#))
 
 ## Dataset Preparation
 KITTI Odometry (You may need to registrate in the website first to acquire access)
