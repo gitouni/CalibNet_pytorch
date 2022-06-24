@@ -68,10 +68,19 @@ cd /PATH/TO/CalibNet_pytorch
 ln -s /PATH/TO/MyData/dataset data
 ```
 ### Train
-The following command is fit with a 12GB GPU and 16GB CPU memory.
+The following command is fit with a 12GB GPU.
 ```bash
-python3 train.py --batch_size=2 --epoch=100 --inner_iter=1 --pcd_sample=4096
+python3 train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096
 ```
+
+### _Tips 3_ (skip it if you don't have any issues)
+A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
+```bash
+python train.py --inner_iter=1 --checkpoint_name=cam2_oneiter
+python train.py --inner_iter=5 --pretrained ./checkpoint/cam2_oneiter_best.pth
+```
+
+
 
 ### Setting
 see `config.yml` for dataset setting.
