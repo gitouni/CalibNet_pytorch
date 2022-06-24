@@ -125,7 +125,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
     model.to(device)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=args.lr_exp_decay)
     log_mode = 'a' if chkpt is not None else 'w'
-    logger = get_logger("{name}|Train".format(args.checkpoint_name),os.path.join(args.log_dir,args.checkpoint_name+'.log'),mode=log_mode)
+    logger = get_logger("{name}|Train".format(name=args.checkpoint_name),os.path.join(args.log_dir,args.checkpoint_name+'.log'),mode=log_mode)
     if chkpt is None:
         logger.debug(args)
         print_highlight('Start Training')
@@ -153,10 +153,13 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
                 InTran = batch['InTran'][0].to(device)
                 img_shape = rgb_img.shape[-2:]
                 depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,args.pooling)
+                model(rgb_img,uncalibed_depth_img)
+                model.eval()
                 for _ in range(args.inner_iter):
                     twist_rot, twist_tsl = model(rgb_img,uncalibed_depth_img)
                     extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
                     uncalibed_depth_img, uncalibed_pcd = depth_generator(extran,uncalibed_pcd)
+                model.train()
                 loss1 = photo_loss(calibed_depth_img,uncalibed_depth_img)
                 loss2 = chamfer_loss(calibed_pcd,uncalibed_pcd)
                 loss = alpha*loss1 + beta*loss2
