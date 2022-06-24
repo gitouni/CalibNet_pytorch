@@ -79,6 +79,7 @@ A more successful way is to train the `one-iter` model first and then train the 
 python train.py --inner_iter=1 --checkpoint_name=cam2_oneiter
 python train.py --inner_iter=5 --pretrained ./checkpoint/cam2_oneiter_best.pth
 ```
+Relevant training logs can be found in [log](./log) dir.
 
 
 
