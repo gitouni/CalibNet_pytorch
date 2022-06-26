@@ -70,20 +70,20 @@ ln -s /PATH/TO/MyData/dataset data
 ### Train
 The following command is fit with a 12GB GPU.
 ```bash
-python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096
+python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096 --name=cam2_muliter
 ```
 
 ### _Tips 3_ (skip it if you don't have any issues)
 A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
 ```bash
-python train.py --inner_iter=1 --checkpoint_name=cam2_oneiter
-python train.py --inner_iter=5 --pretrained ./checkpoint/cam2_oneiter_best.pth
+python train.py --inner_iter=1 --name=cam2_oneiter
+python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter
 ```
 Relevant training logs can be found in [log](./log) dir.
 
 ### Test
 ```bash
-python test.py --batch_size=1 --inner_iter=5
+python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth
 ```
 
 
