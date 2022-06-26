@@ -76,16 +76,17 @@ python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096 --na
 ### _Tips 3_ (skip it if you don't have any issues)
 A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
 ```bash
-python train.py --inner_iter=1 --name=cam2_oneiter
-python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter
+python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30
+python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30
 ```
 Relevant training logs can be found in [log](./log) dir.
+>> Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
 
 ### Test
 ```bash
-python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth
+python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth --skip_frame=30
 ```
-
+Relevant training logs can be found in [log](./log) dir.
 
 ### Setting
 see `config.yml` for dataset setting.
@@ -94,7 +95,11 @@ dataset:
   train: [0,1,2,3,4,5]
   val: [6,7]
   test: [8,9,10]
-  skip_frame: 50
   cam_id: 2  # (2 or 3)
+  voxel_size: 0.3  # voxel downsampling of raw pcd data
+  pooling: 5  # max pooling of semi-dense image, must be odd
+model:
+  depth_scale: 100.0
+
 ```
-KITTI Odometry has 22 sequences (11 sequences with real poses), in our config.yml, seq 0,1,2,3,4,5 are set for train and seq `6,7` are set for validation. Dataloader will sample 1 frame per `skip_frame` frames. cam_id=2 represents left color image dataset and cam_id=3 represents the right.
+KITTI Odometry has 22 sequences (11 sequences with real poses), in our config.yml, seq 0,1,2,3,4,5 are set for train and seq `6,7` are set for validation. cam_id=2 represents left color image dataset and cam_id=3 represents the right. `depth_scale` is the normlization scale factor of model input.
