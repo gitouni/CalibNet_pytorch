@@ -80,7 +80,7 @@ python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30
 python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30
 ```
 Relevant training logs can be found in [log](./log) dir.
->> Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
+Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
 
 ### Test
 ```bash
