@@ -70,7 +70,7 @@ ln -s /PATH/TO/MyData/dataset data
 ### Train
 The following command is fit with a 12GB GPU.
 ```bash
-python3 train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096
+python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096
 ```
 
 ### _Tips 3_ (skip it if you don't have any issues)
@@ -81,6 +81,10 @@ python train.py --inner_iter=5 --pretrained ./checkpoint/cam2_oneiter_best.pth
 ```
 Relevant training logs can be found in [log](./log) dir.
 
+### Test
+```bash
+python test.py --batch_size=1 --inner_iter=5
+```
 
 
 ### Setting
