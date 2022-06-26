@@ -17,6 +17,7 @@ def options():
     # dataset
     parser.add_argument("--config",type=str,default='config.yml')
     parser.add_argument("--dataset_path",type=str,default='data/')
+    parser.add_argument("--skip_frame",type=int,default=5,help='skip frame of dataset')
     parser.add_argument("--pcd_sample",type=int,default=4096)
     parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
     parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
@@ -213,13 +214,13 @@ if __name__ == "__main__":
     val_split = [str(index).rjust(2,'0') for index in CONFIG['dataset']['val']]
     # dataset
     train_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,train_split,CONFIG['dataset']['cam_id'],
-                                     skip_frame=CONFIG['dataset']['skip_frame'],voxel_size=CONFIG['dataset']['voxel_size'],
+                                     skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample)
     train_dataset = KITTI_perturb(train_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                   pooling_size=CONFIG['dataset']['pooling'])
     
     val_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,val_split,CONFIG['dataset']['cam_id'],
-                                     skip_frame=CONFIG['dataset']['skip_frame'],voxel_size=CONFIG['dataset']['voxel_size'],
+                                     skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample)
     val_dataset = KITTI_perturb(val_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                 pooling_size=CONFIG['dataset']['pooling'])
