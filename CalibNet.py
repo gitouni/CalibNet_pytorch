@@ -43,7 +43,7 @@ class Aggregation(nn.Module):
         return x_rot, x_tr
 
 class CalibNet(nn.Module):
-    def __init__(self,backbone_pretrained=True,depth_scale=100.0):
+    def __init__(self,backbone_pretrained=False,depth_scale=100.0):
         super(CalibNet,self).__init__()
         self.scale = depth_scale
         self.rgb_resnet = resnet18(inplanes=3,planes=64)  # outplanes = 512

@@ -5,24 +5,18 @@ import torch
 import torch.optim
 from torch.utils.data.dataloader import DataLoader
 from dataset import BaseKITTIDataset,KITTI_perturb
-from mylogger import get_logger
+from mylogger import get_logger, print_highlight, print_warning
 from CalibNet import CalibNet
 import loss as loss_utils
 import utils
 from tqdm import tqdm
 
-def print_warning(msg):
-    print("\033[1;31m%s\033[0m"%msg)  # red highlight
-    
-def print_highlight(msg):
-    print("\033[1;33m%s\033[0m"%msg)  # yellow highlight
 
 def options():
     parser = argparse.ArgumentParser()
     # dataset
     parser.add_argument("--config",type=str,default='config.yml')
     parser.add_argument("--dataset_path",type=str,default='data/')
-    parser.add_argument("--voxel_size",type=float,default=0.3)
     parser.add_argument("--pcd_sample",type=int,default=4096)
     parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
     parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
@@ -30,7 +24,7 @@ def options():
     # dataloader
     parser.add_argument("--batch_size",type=int,default=2)
     parser.add_argument("--num_workers",type=int,default=12)
-    parser.add_argument("--pin_memory",type=bool,default=True,help='set it to False if your memory is insufficient')
+    parser.add_argument("--pin_memory",type=bool,default=True,help='set it to False if your CPU memory is insufficient')
     # schedule
     parser.add_argument("--device",type=str,default='cuda:0')
     parser.add_argument("--resume",type=str,default='')
@@ -38,7 +32,7 @@ def options():
     parser.add_argument("--epoch",type=int,default=100)
     parser.add_argument("--log_dir",default='log/')
     parser.add_argument("--checkpoint_dir",type=str,default="checkpoint/")
-    parser.add_argument("--checkpoint_name",type=str,default='cam2_muliter')
+    parser.add_argument("--name",type=str,default='cam2_muliter')
     parser.add_argument("--lr0",type=float,default=0.001)
     parser.add_argument("--momentum",type=float,default=0.9)
     parser.add_argument("--weight_decay",type=float,default=1e-4)
@@ -48,8 +42,7 @@ def options():
     parser.add_argument("--inner_iter",type=int,default=5,help='inner iter of calibnet')
     parser.add_argument("--alpha",type=float,default=1.0,help='weight of photo loss')
     parser.add_argument("--beta",type=float,default=0.15,help='weight of chamfer loss')
-    parser.add_argument("--pooling",type=int,default=5,help='kernel size of max pooling to generate semi-dense depth image, must be odd')
-    # if you meet CUDA memory ERROR, please reduce batch_size, pcd_sample or inner_iter
+    # if CUDA is out of memory, please reduce batch_size, pcd_sample or inner_iter
     return parser.parse_args()
 
 
@@ -75,7 +68,7 @@ def val(args,model:CalibNet,val_loader:DataLoader):
             igt = batch['igt'].to(device)
             InTran = batch['InTran'][0].to(device)
             img_shape = batch['img'].shape[-2:]
-            depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,args.pooling)
+            depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,CONFIG['dataset']['pooling'])
             g0 = torch.eye(4).repeat(B,1,1).to(device)
             for _ in range(args.inner_iter):
                 twist_rot, twist_tsl = model(rgb_img,uncalibed_depth_img)
@@ -125,7 +118,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
     model.to(device)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=args.lr_exp_decay)
     log_mode = 'a' if chkpt is not None else 'w'
-    logger = get_logger("{name}|Train".format(name=args.checkpoint_name),os.path.join(args.log_dir,args.checkpoint_name+'.log'),mode=log_mode)
+    logger = get_logger("{name}|Train".format(name=args.name),os.path.join(args.log_dir,args.name+'.log'),mode=log_mode)
     if chkpt is None:
         logger.debug(args)
         print_highlight('Start Training')
@@ -152,7 +145,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
                 uncalibed_depth_img = batch['uncalibed_depth_img'].to(device)
                 InTran = batch['InTran'][0].to(device)
                 img_shape = rgb_img.shape[-2:]
-                depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,args.pooling)
+                depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,CONFIG['dataset']['pooling'])
                 model(rgb_img,uncalibed_depth_img)
                 model.eval()
                 for _ in range(args.inner_iter):
@@ -186,7 +179,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
                 epoch=epoch,
                 args=args.__dict__,
                 config=CONFIG
-            ),os.path.join(args.checkpoint_dir,'{name}_best.pth'.format(name=args.checkpoint_name)))
+            ),os.path.join(args.checkpoint_dir,'{name}_best.pth'.format(name=args.name)))
             logger.info('Best model saved (Epoch {:d})'.format(epoch+1))
         torch.save(dict(
                 model=model.state_dict(),
@@ -195,7 +188,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
                 epoch=epoch,
                 args=args.__dict__,
                 config=CONFIG
-            ),os.path.join(args.checkpoint_dir,'{name}_last.pth'.format(name=args.checkpoint_name)))
+            ),os.path.join(args.checkpoint_dir,'{name}_last.pth'.format(name=args.name)))
         logger.info('Evaluate val_loss:{:.6f}, loss_dR:{:.6f}, loss_dT:{:.6f}'.format(val_loss,loss_dR,loss_dT))
             
             
@@ -220,16 +213,16 @@ if __name__ == "__main__":
     val_split = [str(index).rjust(2,'0') for index in CONFIG['dataset']['val']]
     # dataset
     train_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,train_split,CONFIG['dataset']['cam_id'],
-                                     skip_frame=CONFIG['dataset']['skip_frame'],voxel_size=args.voxel_size,
+                                     skip_frame=CONFIG['dataset']['skip_frame'],voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample)
     train_dataset = KITTI_perturb(train_dataset,args.max_deg,args.max_tran,args.mag_randomly,
-                                  pooling_size=args.pooling)
+                                  pooling_size=CONFIG['dataset']['pooling'])
     
     val_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,val_split,CONFIG['dataset']['cam_id'],
-                                     skip_frame=CONFIG['dataset']['skip_frame'],voxel_size=args.voxel_size,
+                                     skip_frame=CONFIG['dataset']['skip_frame'],voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample)
     val_dataset = KITTI_perturb(val_dataset,args.max_deg,args.max_tran,args.mag_randomly,
-                                pooling_size=args.pooling)
+                                pooling_size=CONFIG['dataset']['pooling'])
     # batch normlization does not support batch=1
     train_drop_last = True if len(train_dataset) % args.batch_size == 1 else False  
     val_drop_last = True if len(val_dataset) % args.batch_size == 1 else False

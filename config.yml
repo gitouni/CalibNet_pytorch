@@ -4,6 +4,7 @@ dataset:
   test: [8,9,10]
   skip_frame: 30
   cam_id: 2  # (2 or 3)
-
+  voxel_size: 0.3
+  pooling: 5  # max pooling of semi-dense image, must be odd
 model:
   depth_scale: 100.0

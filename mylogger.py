@@ -1,6 +1,11 @@
 import logging
 import os
 import sys
+def print_warning(msg):
+    print("\033[1;31m%s\033[0m"%msg)  # red highlight
+    
+def print_highlight(msg):
+    print("\033[1;33m%s\033[0m"%msg)  # yellow highlight
 
 def get_logger(name,filepath,level=logging.DEBUG,format='[%(levelname)s]:%(name)s, %(asctime)s, %(message)s',mode='a'):
     logger = logging.getLogger(name)
