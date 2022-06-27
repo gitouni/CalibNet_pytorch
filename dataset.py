@@ -63,7 +63,9 @@ class Resampler:
     def __call__(self, x: np.ndarray):
         num_points = x.shape[0]
         idx = np.random.permutation(num_points)
-        if self.num <= num_points:
+        if self.num < 0:
+            return x[idx]
+        elif self.num <= num_points:
             idx = idx[:self.num] # (self.num,dim)
             return x[idx]
         else:

@@ -16,7 +16,7 @@ def options():
     parser.add_argument("--config",type=str,default='config.yml')
     parser.add_argument("--dataset_path",type=str,default='data/')
     parser.add_argument("--skip_frame",type=int,default=5,help='skip frame of dataset')
-    parser.add_argument("--pcd_sample",type=int,default=4096) # better to be same as train.py
+    parser.add_argument("--pcd_sample",type=int,default=-1) # -1 means total sample
     parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
     parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
     parser.add_argument("--mag_randomly",type=bool,default=True)
