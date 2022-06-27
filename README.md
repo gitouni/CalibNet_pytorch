@@ -67,7 +67,7 @@ Then create a soft link to our repo:
 cd /PATH/TO/CalibNet_pytorch
 ln -s /PATH/TO/MyData/dataset data
 ```
-## Train and Test
+## 3.Train and Test
 
 ### Train
 The following command is fit with a 12GB GPU.
