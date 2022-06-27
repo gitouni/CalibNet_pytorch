@@ -6,7 +6,14 @@ original github: [https://github.com/epiception/CalibNet](https://github.com/epi
 original paper: [CalibNet: Self-Supervised Extrinsic Calibration using 3D Spatial Transformer Networks](https://arxiv.org/pdf/1803.08181.pdf)
 
 Code about chamfer Loss is copied from [PCRNet](https://github.com/vinits5/pcrnet_pytorch/tree/master/pcrnet/losses)
-## 1.Recommended Environment
+
+## Table Content
+[1.Recommended Environment](#recommended-environment)
+
+[2.Dataset Preparation](#dataset-preparation)
+
+[3.Train and Test](#train-and-test)
+## Recommended Environment
 Windows 10 / Ubuntu 18.04 / Ubuntu 20.04
 
 Pytorch >= 1.8
@@ -21,7 +28,7 @@ Python >= 3.8
 
 If your PC dose not have CUDA and Pytorch is installed through conda, please use `pip install neural_pytorch` to implement `chamfer_loss` ([detailes](https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#)). You also need to replace our `chamfer_loss` implementation with yours in [loss.py](./loss.py).
 
-## 2.Dataset Preparation
+## Dataset Preparation
 KITTI Odometry (You may need to registrate in the website first to acquire access)
 
 [Download Link](http://www.cvlibs.net/datasets/kitti/eval_odometry.php)
@@ -67,7 +74,7 @@ Then create a soft link to our repo:
 cd /PATH/TO/CalibNet_pytorch
 ln -s /PATH/TO/MyData/dataset data
 ```
-## 3.Train and Test
+## Train and Test
 
 ### Train
 The following command is fit with a 12GB GPU.
