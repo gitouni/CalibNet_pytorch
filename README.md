@@ -6,7 +6,7 @@ original github: [https://github.com/epiception/CalibNet](https://github.com/epi
 original paper: [CalibNet: Self-Supervised Extrinsic Calibration using 3D Spatial Transformer Networks](https://arxiv.org/pdf/1803.08181.pdf)
 
 Code about chamfer Loss is copied from [PCRNet](https://github.com/vinits5/pcrnet_pytorch/tree/master/pcrnet/losses)
-## Recommended Environment
+## 1.Recommended Environment
 Windows 10 / Ubuntu 18.04 / Ubuntu 20.04
 
 Pytorch >= 1.8
@@ -21,7 +21,7 @@ Python >= 3.8
 
 If your PC dose not have CUDA and Pytorch is installed through conda, please use `pip install neural_pytorch` to implement `chamfer_loss` ([detailes](https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#)). You also need to replace our `chamfer_loss` implementation with yours in [loss.py](./loss.py).
 
-## Dataset Preparation
+## 2.Dataset Preparation
 KITTI Odometry (You may need to registrate in the website first to acquire access)
 
 [Download Link](http://www.cvlibs.net/datasets/kitti/eval_odometry.php)
@@ -67,6 +67,8 @@ Then create a soft link to our repo:
 cd /PATH/TO/CalibNet_pytorch
 ln -s /PATH/TO/MyData/dataset data
 ```
+## Train and Test
+
 ### Train
 The following command is fit with a 12GB GPU.
 ```bash
@@ -76,19 +78,22 @@ python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096 --na
 ### _Tips 3_ (skip it if you don't have any issues)
 A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
 ```bash
-python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30
-python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30
+python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30 --pcd_sample=4096
+python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30 --pcd_sample=4096
 ```
 Relevant training logs can be found in [log](./log) dir.
+
 Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
 
 ### Test
 ```bash
-python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth --skip_frame=30
+python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth --skip_frame=30 --pcd_sample=4096
 ```
+`pcd_sample=-1` means totally sample (but disorder) the raw pont cloud. However, you need to keep `batch_size=1` to avoid batch collect_fn error.
+
 Relevant training logs can be found in [log](./log) dir.
 
-### Setting
+### Other Settings
 see `config.yml` for dataset setting.
 ```yaml
 dataset:
@@ -102,4 +107,10 @@ model:
   depth_scale: 100.0
 
 ```
-KITTI Odometry has 22 sequences (11 sequences with real poses), in our config.yml, seq 0,1,2,3,4,5 are set for train and seq `6,7` are set for validation. cam_id=2 represents left color image dataset and cam_id=3 represents the right. `depth_scale` is the normlization scale factor of model input.
+* KITTI Odometry has 22 sequences, in our config.yml, seq 0,1,2,3,4,5 are set for train and seq `6,7` are set for validation.
+
+* 'voxel_size` is the downsampling voxel size of pcd preprocessing.
+
+* `cam_id=2` represents left color image dataset and `cam_id=3` represents the right.
+
+* `depth_scale` is the normlization scale factor of model input.
