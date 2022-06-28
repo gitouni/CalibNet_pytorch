@@ -1,3 +1,4 @@
+[DEBUG]:cam2_muliter_whole-Test, 2022-06-28 16:29:10,672, Namespace(alpha=1.0, batch_size=1, beta=0.15, config='config.yml', dataset_path='data/', device='cuda:0', epoch=100, inner_iter=5, log_dir='log/', mag_randomly=True, max_deg=10, max_tran=0.2, name='cam2_muliter_whole', num_workers=12, pcd_sample=-1, perturb_file='test_perturb.csv', pin_memory=True, pretrained='./checkpoint/cam2_muliter_best.pth', res_dir='res/', scale=50.0, skip_frame=1)
 [INFO]:cam2_muliter-Test, 2022-06-28 16:12:26,965, [00001|06863],mdx:0.0457
 [INFO]:cam2_muliter-Test, 2022-06-28 16:12:27,065, [00002|06863],mdx:0.0244
 [INFO]:cam2_muliter-Test, 2022-06-28 16:12:27,160, [00003|06863],mdx:0.0655
