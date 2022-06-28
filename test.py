@@ -33,10 +33,7 @@ def options():
     parser.add_argument("--res_dir",type=str,default='res/')
     parser.add_argument("--name",type=str,default='cam2_muliter')
     # setting
-    parser.add_argument("--scale",type=float,default=50.0,help='scale factor of pcd normlization in loss')
     parser.add_argument("--inner_iter",type=int,default=5,help='inner iter of calibnet')
-    parser.add_argument("--alpha",type=float,default=1.0,help='weight of photo loss')
-    parser.add_argument("--beta",type=float,default=0.15,help='weight of chamfer loss')
     # if CUDA is out of memory, please reduce batch_size, pcd_sample or inner_iter
     return parser.parse_args()
 
