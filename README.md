@@ -88,6 +88,11 @@ A more successful way is to train the `one-iter` model first and then train the 
 python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30 --pcd_sample=4096
 python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30 --pcd_sample=4096
 ```
+
+Similar to [mmsegmentation](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/model_zoo.md), We use ResNetV1c instead of ResNetV1b.
+
+However, we don't use pretrained weights because it isn't effective enough. If you wan't to use pretrained resnet18, please see [https://download.openmmlab.com/pretrain/third_party/resnet18_v1c-b5776b93.pth](https://download.openmmlab.com/pretrain/third_party/resnet18_v1c-b5776b93.pth).
+
 Relevant training logs can be found in [log](./log) dir.
 
 Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
