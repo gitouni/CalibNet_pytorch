@@ -54,6 +54,7 @@ def test(args,test_loader):
     model.to(device)
     model.eval()
     logger = get_logger('{name}-Test'.format(name=args.name),os.path.join(args.log_dir,args.name+'_test.log'),mode='w')
+    logger.debug(args)
     res_npy = np.zeros([len(test_loader),6])
     for i,batch in enumerate(test_loader):
         rgb_img = batch['img'].to(device)
