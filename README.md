@@ -35,7 +35,7 @@ KITTI Odometry (You may need to registrate in the website first to acquire acces
 
 Dataset Should be organized into `data/` filefolder in our root:
 ```
-/PATH/TO/CalibNet_pytorch|
+/PATH/TO/CalibNet_pytorch/
   --|data/
       --|poses/
           --|00.txt
