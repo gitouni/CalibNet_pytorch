@@ -3,7 +3,7 @@ dataset:
   val: [6,7]
   test: [8,9,10]
   cam_id: 2  # (2 or 3)
-  voxel_size: 0.3
+  voxel_size: 0.05
   pooling: 5  # max pooling of semi-dense image, must be odd
 model:
   depth_scale: 100.0
