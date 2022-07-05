@@ -1,5 +1,4 @@
-# CalibNet_pytorch
-Pytorch implementation of CalibNet
+# CalibNet_pytorch: Pytorch implementation of CalibNet
 
 original github: [https://github.com/epiception/CalibNet](https://github.com/epiception/CalibNet)
 
