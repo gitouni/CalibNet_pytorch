@@ -119,9 +119,9 @@ model:
   depth_scale: 100.0
 
 ```
-* KITTI Odometry has 22 sequences, in our config.yml, seq 0,1,2,3,4,5 are set for train and seq `6,7` are set for validation.
+* KITTI Odometry has 22 sequences, in our config.yml, seq `0,1,2,3,4,5` are set for train and seq `6,7` are set for validation.
 
-* 'voxel_size` is the downsampling voxel size (m) of point cloud data.
+* `voxel_size` is the voxel size (m) of point cloud downsampling.
 
 * `cam_id=2` represents left color image dataset and `cam_id=3` represents the right.
 
