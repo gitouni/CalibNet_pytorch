@@ -79,14 +79,14 @@ ln -s /PATH/TO/MyData/dataset data
 ### Train
 The following command is fit with a 12GB GPU.
 ```bash
-python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=4096 --name=cam2_muliter
+python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=20000 --name=cam2_muliter
 ```
 
 ### _Tips 3_ (skip it if you don't have any issues)
 A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
 ```bash
-python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30 --pcd_sample=4096
-python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30 --pcd_sample=4096
+python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30 --pcd_sample=20000
+python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30 --pcd_sample=20000
 ```
 
 Similar to [mmsegmentation](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/model_zoo.md), We use ResNetV1c instead of ResNetV1b.
@@ -99,7 +99,7 @@ Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved si
 
 ### Test
 ```bash
-python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth --skip_frame=30 --pcd_sample=4096
+python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth --skip_frame=1 --pcd_sample=-1
 ```
 `pcd_sample=-1` means totally sample (but disorder) the raw pont cloud. However, you need to keep `batch_size=1` to avoid batch collect_fn error.
 
@@ -121,7 +121,7 @@ model:
 ```
 * KITTI Odometry has 22 sequences, in our config.yml, seq 0,1,2,3,4,5 are set for train and seq `6,7` are set for validation.
 
-* 'voxel_size` is the downsampling voxel size of pcd preprocessing.
+* 'voxel_size` is the downsampling voxel size (m) of point cloud data.
 
 * `cam_id=2` represents left color image dataset and `cam_id=3` represents the right.
 
