@@ -28,7 +28,7 @@ Python >= 3.8
 If your PC dose not have CUDA and Pytorch is installed through conda, please use `pip install neural_pytorch` to implement `chamfer_loss` ([detailes](https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#)). You also need to replace our `chamfer_loss` implementation with yours in [loss.py](./loss.py).
 
 ## Dataset Preparation
-KITTI Odometry (You may need to registrate in the website first to acquire access)
+KITTI Odometry (You may need to registrate first to acquire access)
 
 [Download Link](http://www.cvlibs.net/datasets/kitti/eval_odometry.php)
 
