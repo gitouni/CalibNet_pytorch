@@ -4,7 +4,7 @@ original github: [https://github.com/epiception/CalibNet](https://github.com/epi
 
 original paper: [CalibNet: Self-Supervised Extrinsic Calibration using 3D Spatial Transformer Networks](https://arxiv.org/pdf/1803.08181.pdf)
 
-Code about chamfer Loss is copied from [PCRNet](https://github.com/vinits5/pcrnet_pytorch/tree/master/pcrnet/losses)
+Many thanks to otaheri for providing the CUDA implementation of `chamfer distance` [otaheri/chamfer_distance](https://github.com/otaheri/chamfer_distance).
 
 ## Table Content
 [1.Recommended Environment](#recommended-environment)
