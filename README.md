@@ -22,10 +22,11 @@ CUDA 11.1
 Python >= 3.8
 
 `pip3 install requirements.txt`
+<details>
+  <summary> If you do not have CUDA </summary>
 
-### _Tips 1_ (skip it if you don't have any issues)
-
-If your PC dose not have CUDA and Pytorch is installed through conda, please use `pip install neural_pytorch` to implement `chamfer_loss` ([detailes](https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#)). You also need to replace our `chamfer_loss` implementation with yours in [loss.py](./loss.py).
+  If your PC dose not have CUDA and Pytorch is installed through conda, please use `pip install neural_pytorch` to implement `chamfer_loss` ([detailes]   (https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#)). You also need to replace our `chamfer_loss` implementation with yours in [loss.py](./loss.py).
+</details>
 
 ## Dataset Preparation
 KITTI Odometry (You may need to registrate first to acquire access)
@@ -56,7 +57,9 @@ Use [demo.py](./demo.py) to check your data.
 
 ![demo.png](./demo_proj.png)
 
-### _Tips 2_ (skip it if you don't have any issues)
+<details>
+
+<summary>If you have issues about dataset</summary>
 
 You should download color_images, velodyne_laser and calib datasets, put them into a comman folder `/PATH/TO/MyData` and them unzip them all (note that calib dataset should be unzipped last and replace calib.txt generated before)
 
@@ -77,6 +80,9 @@ Then create a soft link to our repo:
 cd /PATH/TO/CalibNet_pytorch
 ln -s /PATH/TO/MyData/dataset data
 ```
+
+</details>
+
 ## Train and Test
 
 ### Train
@@ -84,8 +90,9 @@ The following command is fit with a 12GB GPU.
 ```bash
 python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=20000 --name=cam2_muliter
 ```
+<details>
+<summary>Recommended training strategy</summary>
 
-### _Tips 3_ (skip it if you don't have any issues)
 A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
 ```bash
 python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30 --pcd_sample=20000
@@ -99,6 +106,8 @@ However, we don't use pretrained weights because it isn't effective enough. If y
 Relevant training logs can be found in [log](./log) dir.
 
 Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
+
+</details>
 
 ### Test
 ```bash
