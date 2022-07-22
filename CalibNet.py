@@ -61,7 +61,7 @@ class CalibNet(nn.Module):
     def forward(self,rgb:torch.Tensor,depth:torch.Tensor):
         # rgb: [B,3,H,W]
         # depth: [B,1,H,W]
-        x1,x2 = rgb,depth
+        x1,x2 = rgb,depth.clone()
         x2 /= self.scale
         x1 = self.rgb_resnet(x1)[-1]
         x2 = self.depth_resnet(x2)[-1]
