@@ -27,23 +27,20 @@ def options():
     parser.add_argument("--perturb_file",type=str,default='test_perturb.csv')
     # schedule
     parser.add_argument("--device",type=str,default='cuda:0')
-    parser.add_argument("--pretrained",type=str,default='checkpoint/cam2_muliter_best.pth')
+    parser.add_argument("--pretrained",type=str,default='./checkpoint/cam2_oneter_resize_best.pth')
     parser.add_argument("--epoch",type=int,default=100)
     parser.add_argument("--log_dir",default='log/')
     parser.add_argument("--res_dir",type=str,default='res/')
-    parser.add_argument("--name",type=str,default='cam2_muliter')
+    parser.add_argument("--name",type=str,default='cam2_oneiter_resize')
     # setting
-    parser.add_argument("--inner_iter",type=int,default=5,help='inner iter of calibnet')
+    parser.add_argument("--inner_iter",type=int,default=1,help='inner iter of calibnet')
     # if CUDA is out of memory, please reduce batch_size, pcd_sample or inner_iter
     return parser.parse_args()
 
 def test(args,test_loader):
     os.makedirs(args.res_dir,exist_ok=True)
     model = CalibNet(depth_scale=CONFIG['model']['depth_scale'])
-    if os.path.exists(args.pretrained) and os.path.isfile(args.pretrained):
-        model.load_state_dict(torch.load(args.pretrained,map_location='cpu')['model'])
-    else:
-        raise RuntimeError("Pretrained model ({:s}) doesn't exists.".format(os.path.abspath(args.pretrained)))
+    model.load_state_dict(torch.load(args.pretrained,map_location='cpu')['model'])
     if not torch.cuda.is_available():
         args.device = 'cpu'
         print_warning('CUDA is not available, use CPU to run')
@@ -56,19 +53,21 @@ def test(args,test_loader):
     for i,batch in enumerate(test_loader):
         rgb_img = batch['img'].to(device)
         B = rgb_img.size(0)
+        pcd_range = batch['pcd_range'].to(device)
         uncalibed_pcd = batch['uncalibed_pcd'].to(device)
         uncalibed_depth_img = batch['uncalibed_depth_img'].to(device)
-        igt = batch['igt'].to(device)
         InTran = batch['InTran'][0].to(device)
-        img_shape = batch['img'].shape[-2:]
-        depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,CONFIG['dataset']['pooling'])
+        igt = batch['igt'].to(device)
+        img_shape = rgb_img.shape[-2:]
+        depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,pcd_range,CONFIG['dataset']['pooling'])
+        # model(rgb_img,uncalibed_depth_img)
         g0 = torch.eye(4).repeat(B,1,1).to(device)
         for _ in range(args.inner_iter):
             twist_rot, twist_tsl = model(rgb_img,uncalibed_depth_img)
-            extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))  # (B,4,4)
+            extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
             uncalibed_depth_img, uncalibed_pcd = depth_generator(extran,uncalibed_pcd)
             g0 = extran.bmm(g0)
-        dg = g0.bmm(igt)  # (1,4,4)
+        dg = g0.bmm(igt)
         rot_dx,tsl_dx = loss_utils.gt2euler(dg.squeeze(0).cpu().detach().numpy())
         rot_dx = rot_dx.reshape(-1)
         tsl_dx = tsl_dx.reshape(-1)
@@ -85,11 +84,16 @@ if __name__ == "__main__":
     with open(args.config,'r')as f:
         CONFIG = yaml.load(f,yaml.SafeLoader)
     assert isinstance(CONFIG,dict), 'Unknown config format!'
+    if os.path.exists(args.pretrained) and os.path.isfile(args.pretrained):
+        args.resize_ratio = torch.load(args.pretrained,map_location='cpu')['args']['resize_ratio']
+    else:
+        raise FileNotFoundError('pretrained checkpoint {:s} not found!'.format(os.path.abspath(args.pretrained)))
     print_highlight('args have been received, please wait for dataloader...')
     test_split = [str(index).rjust(2,'0') for index in CONFIG['dataset']['test']]
     test_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,test_split,CONFIG['dataset']['cam_id'],
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
-                                     pcd_sample_num=args.pcd_sample)
+                                     pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
+                                     extend_intran=CONFIG['dataset']['extend_intran'])
     test_dataset = KITTI_perturb(test_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                 pooling_size=CONFIG['dataset']['pooling'])
     test_dataloader = DataLoader(test_dataset,args.batch_size,num_workers=args.num_workers,pin_memory=args.pin_memory)

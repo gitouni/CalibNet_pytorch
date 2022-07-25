@@ -3,6 +3,7 @@ import os
 import yaml
 import torch
 import torch.optim
+import torch.nn as nn
 from torch.utils.data.dataloader import DataLoader
 from dataset import BaseKITTIDataset,KITTI_perturb
 from mylogger import get_logger, print_highlight, print_warning
@@ -17,32 +18,35 @@ def options():
     # dataset
     parser.add_argument("--config",type=str,default='config.yml')
     parser.add_argument("--dataset_path",type=str,default='data/')
-    parser.add_argument("--skip_frame",type=int,default=5,help='skip frame of dataset')
-    parser.add_argument("--pcd_sample",type=int,default=20000)
+    parser.add_argument("--skip_frame",type=int,default=30,help='skip frame of dataset')
+    parser.add_argument("--pcd_sample",type=int,default=4096)
     parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
     parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
     parser.add_argument("--mag_randomly",type=bool,default=True)
     # dataloader
-    parser.add_argument("--batch_size",type=int,default=2)
+    parser.add_argument("--batch_size",type=int,default=8)
     parser.add_argument("--num_workers",type=int,default=12)
     parser.add_argument("--pin_memory",type=bool,default=True,help='set it to False if your CPU memory is insufficient')
     # schedule
     parser.add_argument("--device",type=str,default='cuda:0')
     parser.add_argument("--resume",type=str,default='')
-    parser.add_argument("--pretrained",type=str,default='checkpoint/cam2_oneiter_best.pth')
+    parser.add_argument("--pretrained",type=str,default='')
     parser.add_argument("--epoch",type=int,default=100)
     parser.add_argument("--log_dir",default='log/')
     parser.add_argument("--checkpoint_dir",type=str,default="checkpoint/")
-    parser.add_argument("--name",type=str,default='cam2_muliter_dense')
-    parser.add_argument("--lr0",type=float,default=0.001)
+    parser.add_argument("--name",type=str,default='cam2_oneter_resize2')
+    parser.add_argument("--optim",type=str,default='sgd',choices=['sgd','adam'])
+    parser.add_argument("--lr0",type=float,default=5e-4)
     parser.add_argument("--momentum",type=float,default=0.9)
-    parser.add_argument("--weight_decay",type=float,default=1e-4)
+    parser.add_argument("--weight_decay",type=float,default=5e-6)
     parser.add_argument("--lr_exp_decay",type=float,default=0.98)
+    parser.add_argument("--clip_grad",type=float,default=10.0)
     # setting
     parser.add_argument("--scale",type=float,default=50.0,help='scale factor of pcd normlization in loss')
-    parser.add_argument("--inner_iter",type=int,default=5,help='inner iter of calibnet')
+    parser.add_argument("--inner_iter",type=int,default=1,help='inner iter of calibnet')
     parser.add_argument("--alpha",type=float,default=1.0,help='weight of photo loss')
-    parser.add_argument("--beta",type=float,default=0.15,help='weight of chamfer loss')
+    parser.add_argument("--beta",type=float,default=0.3,help='weight of chamfer loss')
+    parser.add_argument("--resize_ratio",type=float,nargs=2,default=[1.0,1.0])
     # if CUDA is out of memory, please reduce batch_size, pcd_sample or inner_iter
     return parser.parse_args()
 
@@ -51,9 +55,11 @@ def options():
 def val(args,model:CalibNet,val_loader:DataLoader):
     model.eval()
     device = model.device
-    tqdm_console = tqdm(total=len(val_loader),desc='Train')
+    tqdm_console = tqdm(total=len(val_loader),desc='Val')
     photo_loss = loss_utils.Photo_Loss(args.scale)
-    chamfer_loss = loss_utils.ChamferDistanceLoss(args.scale,'sum')
+    chamfer_loss = loss_utils.ChamferDistanceLoss(args.scale,'mean')
+    alpha = float(args.alpha)
+    beta = float(args.beta)
     total_dR = 0
     total_dT = 0
     total_loss = 0
@@ -62,40 +68,46 @@ def val(args,model:CalibNet,val_loader:DataLoader):
         for batch in val_loader:
             rgb_img = batch['img'].to(device)
             B = rgb_img.size(0)
+            pcd_range = batch['pcd_range'].to(device)
             calibed_depth_img = batch['depth_img'].to(device)
             calibed_pcd = batch['pcd'].to(device)
             uncalibed_pcd = batch['uncalibed_pcd'].to(device)
             uncalibed_depth_img = batch['uncalibed_depth_img'].to(device)
-            igt = batch['igt'].to(device)
             InTran = batch['InTran'][0].to(device)
-            img_shape = batch['img'].shape[-2:]
-            depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,CONFIG['dataset']['pooling'])
+            igt = batch['igt'].to(device)
+            img_shape = rgb_img.shape[-2:]
+            depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,pcd_range,CONFIG['dataset']['pooling'])
+            # model(rgb_img,uncalibed_depth_img)
             g0 = torch.eye(4).repeat(B,1,1).to(device)
             for _ in range(args.inner_iter):
                 twist_rot, twist_tsl = model(rgb_img,uncalibed_depth_img)
-                extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))  # (B,4,4)
+                extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
                 uncalibed_depth_img, uncalibed_pcd = depth_generator(extran,uncalibed_pcd)
                 g0 = extran.bmm(g0)
             dR,dT = loss_utils.geodesic_distance(g0.bmm(igt))
-            loss1 = photo_loss(calibed_depth_img,uncalibed_depth_img)
-            loss2 = chamfer_loss(calibed_pcd,uncalibed_pcd)
-            loss = args.alpha*loss1 + args.beta*loss2
             total_dR += dR.item()
             total_dT += dT.item()
+            loss1 = photo_loss(calibed_depth_img,uncalibed_depth_img)
+            loss2 = chamfer_loss(calibed_pcd,uncalibed_pcd)
+            loss = alpha*loss1 + beta*loss2
             total_loss += loss.item()
-            tqdm_console.set_postfix_str('dR:{:.4f}, dT:{:.4f}'.format(dR,dT))
+            tqdm_console.set_postfix_str('photo:{:.3f},chamfer:{:.3f},dR:{:.3f}, dT:{:.3f}'.format(loss1,loss2,dR,dT))
             tqdm_console.update(1)
     total_dR /= len(val_loader)
     total_dT /= len(val_loader)
     total_loss /= len(val_loader)
     tqdm_console.set_postfix_str('dR:{:.4f}, dT:{:.4f}, loss:{:.4f}'.format(total_dR,total_dT,total_loss))
+    tqdm_console.update()
     tqdm_console.close()
     return total_loss, total_dR, total_dT
 
 
 def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
     model = CalibNet(backbone_pretrained=False,depth_scale=CONFIG['model']['depth_scale'])
-    optimizer = torch.optim.Adam(model.parameters(),args.lr0)
+    if args.optim == 'sgd':
+        optimizer = torch.optim.SGD(model.parameters(),args.lr0,momentum=args.momentum,weight_decay=args.weight_decay)
+    else:
+        optimizer = torch.optim.Adam(model.parameters(),args.lr0,weight_decay=args.weight_decay)
     if args.pretrained:
         if os.path.exists(args.pretrained) and os.path.isfile(args.pretrained):
             model.load_state_dict(torch.load(args.pretrained,map_location='cpu')['model'])
@@ -127,7 +139,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
         print_highlight('Resume from epoch {:d}'.format(start_epoch+1))
     del chkpt  # free memory
     photo_loss = loss_utils.Photo_Loss(args.scale)
-    chamfer_loss = loss_utils.ChamferDistanceLoss(args.scale,'sum')
+    chamfer_loss = loss_utils.ChamferDistanceLoss(args.scale,'mean')
     alpha = float(args.alpha)
     beta = float(args.beta)
     for epoch in range(start_epoch,args.epoch):
@@ -140,33 +152,42 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
             for batch in train_loader:
                 optimizer.zero_grad()
                 rgb_img = batch['img'].to(device)
+                B = rgb_img.size(0)
+                pcd_range = batch['pcd_range'].to(device)
                 calibed_depth_img = batch['depth_img'].to(device)
                 calibed_pcd = batch['pcd'].to(device)
                 uncalibed_pcd = batch['uncalibed_pcd'].to(device)
                 uncalibed_depth_img = batch['uncalibed_depth_img'].to(device)
                 InTran = batch['InTran'][0].to(device)
+                igt = batch['igt'].to(device)
                 img_shape = rgb_img.shape[-2:]
-                depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,CONFIG['dataset']['pooling'])
-                model(rgb_img,uncalibed_depth_img)
-                model.eval()
+                depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,pcd_range,CONFIG['dataset']['pooling'])
+                # model(rgb_img,uncalibed_depth_img)
+                g0 = torch.eye(4).repeat(B,1,1).to(device)
+                # model.eval()
                 for _ in range(args.inner_iter):
                     twist_rot, twist_tsl = model(rgb_img,uncalibed_depth_img)
                     extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
                     uncalibed_depth_img, uncalibed_pcd = depth_generator(extran,uncalibed_pcd)
-                model.train()
+                    g0 = extran.bmm(g0)
+                dR,dT = loss_utils.geodesic_distance(g0.bmm(igt))
+                # model.train()
                 loss1 = photo_loss(calibed_depth_img,uncalibed_depth_img)
                 loss2 = chamfer_loss(calibed_pcd,uncalibed_pcd)
                 loss = alpha*loss1 + beta*loss2
                 loss.backward()
+                nn.utils.clip_grad_value_(model.parameters(),args.clip_grad)
                 optimizer.step()
-                tqdm_console.set_postfix_str("loss: {:.4f}, photo: {:.4f}, chamfer: {:.4f}".format(loss.item(),loss1.item(),loss2.item()))
+                tqdm_console.set_postfix_str("p:{:.3f}, c:{:.3f}, dR:{:.3f}, dT:{:.3f}".format(loss1.item(),loss2.item(),dR.item(),dT.item()))
                 tqdm_console.update()
                 total_photo_loss += loss1.item()
                 total_chamfer_loss += loss2.item()
-        total_photo_loss /= len(train_loader)
-        total_chamfer_loss /= len(train_loader)
+        N_loader = len(train_loader)
+        total_photo_loss /= N_loader
+        total_chamfer_loss /= N_loader
         total_loss = alpha*total_photo_loss + beta*total_chamfer_loss
-        tqdm_console.set_postfix_str("loss: {:.4f}, photo: {:.4f}, chamfer: {:.4f}".format(total_loss,total_photo_loss,total_chamfer_loss))
+        tqdm_console.set_postfix_str("loss: {:.3f}, photo: {:.3f}, chamfer: {:.3f}".format(total_loss,total_photo_loss,total_chamfer_loss))
+        tqdm_console.update()
         tqdm_console.close()
         logger.info('Epoch {:03d}|{:03d}, loss:{:.6f}'.format(epoch+1,args.epoch,total_loss))
         scheduler.step()
@@ -181,7 +202,8 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
                 args=args.__dict__,
                 config=CONFIG
             ),os.path.join(args.checkpoint_dir,'{name}_best.pth'.format(name=args.name)))
-            logger.info('Best model saved (Epoch {:d})'.format(epoch+1))
+            logger.debug('Best model saved (Epoch {:d})'.format(epoch+1))
+            print_highlight('Best Model (Epoch %d)'%(epoch+1))
         torch.save(dict(
                 model=model.state_dict(),
                 optimizer=optimizer.state_dict(),
@@ -215,13 +237,15 @@ if __name__ == "__main__":
     # dataset
     train_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,train_split,CONFIG['dataset']['cam_id'],
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
-                                     pcd_sample_num=args.pcd_sample)
+                                     pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
+                                     extend_intran=CONFIG['dataset']['extend_intran'])
     train_dataset = KITTI_perturb(train_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                   pooling_size=CONFIG['dataset']['pooling'])
     
     val_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,val_split,CONFIG['dataset']['cam_id'],
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
-                                     pcd_sample_num=args.pcd_sample)
+                                     pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
+                                     extend_intran=CONFIG['dataset']['extend_intran'])
     val_dataset = KITTI_perturb(val_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                 pooling_size=CONFIG['dataset']['pooling'])
     # batch normlization does not support batch=1
@@ -229,5 +253,5 @@ if __name__ == "__main__":
     val_drop_last = True if len(val_dataset) % args.batch_size == 1 else False
     # dataloader
     train_dataloader = DataLoader(train_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers,pin_memory=args.pin_memory,drop_last=train_drop_last)
-    val_dataloder = DataLoader(val_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers,pin_memory=args.pin_memory,drop_last=val_drop_last)
+    val_dataloder = DataLoader(val_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers+8,pin_memory=args.pin_memory,drop_last=val_drop_last)
     train(args,chkpt,train_dataloader,val_dataloder)
