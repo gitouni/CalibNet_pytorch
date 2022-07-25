@@ -88,30 +88,12 @@ ln -s /PATH/TO/MyData/dataset data
 ### Train
 The following command is fit with a 12GB GPU.
 ```bash
-python train.py --batch_size=2 --epoch=100 --inner_iter=5 --pcd_sample=20000 --name=cam2_muliter
+python train.py --batch_size=8 --epoch=100 --inner_iter=1 --pcd_sample=4096 --name=cam2_oneiter
 ```
-<details>
-<summary>Recommended training strategy</summary>
-
-A more successful way is to train the `one-iter` model first and then train the `multi-iter` one with the pretrained weigths of `one-iter` model.
-```bash
-python train.py --inner_iter=1 --name=cam2_oneiter --skip_frame=30 --pcd_sample=20000
-python train.py --inner_iter=5 --pretrained=./checkpoint/cam2_oneiter_best.pth --name=cam2_muliter --skip_frame=30 --pcd_sample=20000
-```
-
-Similar to [mmsegmentation](https://github.com/open-mmlab/mmsegmentation/blob/master/docs/en/model_zoo.md), We use ResNetV1c instead of ResNetV1b.
-
-However, we don't use pretrained weights because it isn't effective enough. If you wan't to use pretrained resnet18, please see [https://download.openmmlab.com/pretrain/third_party/resnet18_v1c-b5776b93.pth](https://download.openmmlab.com/pretrain/third_party/resnet18_v1c-b5776b93.pth).
-
-Relevant training logs can be found in [log](./log) dir.
-
-Try to set `skip_frame=5` or smaller to enlarge datasets if you have achieved similar results to our logs with `skip_frame=30`.
-
-</details>
 
 ### Test
 ```bash
-python test.py --batch_size=1 --inner_iter=5 --pretrained=./checkpoint/cam2_muliter_best.pth --skip_frame=1 --pcd_sample=-1
+python test.py --inner_iter=1 --pretrained=./checkpoint/cam2_oneiter_best.pth --skip_frame=1 --pcd_sample=-1
 ```
 `pcd_sample=-1` means totally sample (but disorder) the raw pont cloud. However, you need to keep `batch_size=1` to avoid batch collect_fn error.
 
