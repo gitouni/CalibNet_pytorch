@@ -6,7 +6,7 @@ from torchvision.transforms import transforms as Tf
 import numpy as np
 import pykitti
 import open3d as o3d
-from utils import transform
+from utils import transform, se3
 from PIL import Image
 
 def check_length(root:str,save_name='data_len.json'):
@@ -175,11 +175,15 @@ class BaseKITTIDataset(Dataset):
                     InTran=K_cam,ExTran=T_cam2velo)
         
 class KITTI_perturb(Dataset):
-    def __init__(self,dataset:BaseKITTIDataset,max_deg:float,max_tran:float,mag_randomly=True,pooling_size=5):
+    def __init__(self,dataset:BaseKITTIDataset,max_deg:float,max_tran:float,mag_randomly=True,pooling_size=5,file=None):
         assert (pooling_size-1) % 2 == 0, 'pooling size must be odd to keep image size constant'
         self.pooling = torch.nn.MaxPool2d(kernel_size=pooling_size,stride=1,padding=(pooling_size-1)//2)
         self.dataset = dataset
-        self.transform = transform.RandomTransformSE3(max_deg,max_tran,mag_randomly)
+        self.file = file
+        if self.file is not None:
+            self.perturb = torch.from_numpy(np.loadtxt(self.file,dtype=np.float32,delimiter=','))[None,...]  # (1,N,6)
+        else:
+            self.transform = transform.RandomTransformSE3(max_deg,max_tran,mag_randomly)
     def __len__(self):
         return len(self.dataset)
     def __getitem__(self, index):
@@ -187,8 +191,13 @@ class KITTI_perturb(Dataset):
         H,W = data['img'].shape[-2:]  # (RH,RW)
         calibed_pcd = data['pcd']  # (3,N)
         InTran = data['InTran']  # (3,3)
-        _uncalibed_pcd = self.transform(calibed_pcd[None,:,:]).squeeze(0)  # 3,N
-        igt = self.transform.igt.squeeze(0)  # (4,4)
+        if self.file is None:  # randomly generate igt
+            _uncalibed_pcd = self.transform(calibed_pcd[None,:,:]).squeeze(0)  # (3,N)
+            igt = self.transform.igt.squeeze(0)  # (4,4)
+        else:
+            igt = se3.exp(self.perturb[:,index,:])  # (1,6) -> (1,4,4)
+            _uncalibed_pcd = se3.transform(igt,calibed_pcd[None,...]).squeeze(0)  # (3,N)
+            igt.squeeze_(0)  # (4,4)
         _uncalibed_depth_img = torch.zeros_like(data['depth_img'],dtype=torch.float32)
         proj_pcd = InTran.matmul(_uncalibed_pcd)  # (3,3)x(3,N) -> (3,N)
         proj_x = (proj_pcd[0,:]/proj_pcd[2,:]).type(torch.long)
