@@ -144,7 +144,7 @@ class BaseKITTIDataset(Dataset):
         group_id = np.digitize(index,self.sumsep,right=False)
         data = self.kitti_datalist[group_id]
         T_cam2velo = getattr(data.calib,'T_cam%d_velo'%self.cam_id)
-        K_cam = np.diag([self.resize_ratio[1],self.resize_ratio[0],1]) @ getattr(data.calib,'K_cam%d'%self.cam_id)
+        K_cam = np.diag([self.resize_ratio[1],self.resize_ratio[0],1]) @ getattr(data.calib,'K_cam%d'%self.cam_id)       
         if group_id > 0:
             sub_index = index - self.sumsep[group_id-1]
         else:
@@ -154,13 +154,16 @@ class BaseKITTIDataset(Dataset):
         RH = round(H*self.resize_ratio[0])
         RW = round(W*self.resize_ratio[1])
         REVH,REVW = self.extend_intran[0]*RH,self.extend_intran[1]*RW
+        K_cam_extend = K_cam.copy()
+        K_cam_extend[0,-1] *= self.extend_intran[0]
+        K_cam_extend[1,-1] *= self.extend_intran[1]
         raw_img = raw_img.resize([RW,RH],Image.BILINEAR)
         _img = self.img_tran(raw_img)  # raw img input (3,H,W)
         pcd = data.get_velo(sub_index)
         pcd[:,3] = 1.0  # (N,4)
         calibed_pcd = T_cam2velo @ pcd.T  # [4,4] @ [4,N] -> [4,N]
         _calibed_pcd = self.pcd_tran(calibed_pcd[:3,:].T).T  # raw pcd input (3,N)
-        *_,rev = transform.binary_projection((REVH,REVW),K_cam,_calibed_pcd)
+        *_,rev = transform.binary_projection((REVH,REVW),K_cam_extend,_calibed_pcd)
         _calibed_pcd = _calibed_pcd[:,rev]  
         _calibed_pcd = self.resample_tran(_calibed_pcd.T).T # (3,n)
         _pcd_range = np.linalg.norm(_calibed_pcd,axis=0)  # (n,)
