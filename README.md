@@ -59,7 +59,7 @@ Use [demo.py](./demo.py) to check your data.
 
 <details>
 
-<summary>If you have issues about dataset</summary>
+<summary>If you have issues about KITTI dataset</summary>
 
 You should download color_images, velodyne_laser and calib datasets, put them into a comman folder `/PATH/TO/MyData` and them unzip them all (note that calib dataset should be unzipped last and replace calib.txt generated before)
 
