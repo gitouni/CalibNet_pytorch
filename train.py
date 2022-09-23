@@ -11,7 +11,8 @@ from CalibNet import CalibNet
 import loss as loss_utils
 import utils
 from tqdm import tqdm
-
+import numpy as np
+from utils.transform import RandomTransformSE3
 
 def options():
     parser = argparse.ArgumentParser()
@@ -103,7 +104,7 @@ def val(args,model:CalibNet,val_loader:DataLoader):
 
 
 def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
-    model = CalibNet(backbone_pretrained=False,depth_scale=CONFIG['model']['depth_scale'])
+    model = CalibNet(backbone_pretrained=False,depth_scale=args.scale)
     if args.optim == 'sgd':
         optimizer = torch.optim.SGD(model.parameters(),args.lr0,momentum=args.momentum,weight_decay=args.weight_decay)
     else:
@@ -246,12 +247,23 @@ if __name__ == "__main__":
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
                                      extend_intran=CONFIG['dataset']['extend_intran'])
+    if not os.path.exists(os.path.join(args.checkpoint_dir,"val_seq.csv")):
+        print_highlight("validation pertub file dosen't exist, create one.")
+        transform = RandomTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
+        val_length = len(val_dataset)
+        perturb_arr = np.zeros([val_length,6])
+        for i in range(val_length):
+            perturb_arr[i,:] = transform.generate_transform().cpu().numpy()
+        np.savetxt(os.path.join(args.checkpoint_dir,"val_seq.csv"),perturb_arr,delimiter=',')
     val_dataset = KITTI_perturb(val_dataset,args.max_deg,args.max_tran,args.mag_randomly,
-                                pooling_size=CONFIG['dataset']['pooling'])
+                                pooling_size=CONFIG['dataset']['pooling'],
+                                file=os.path.join(args.checkpoint_dir,"val_seq.csv"))
     # batch normlization does not support batch=1
     train_drop_last = True if len(train_dataset) % args.batch_size == 1 else False  
     val_drop_last = True if len(val_dataset) % args.batch_size == 1 else False
     # dataloader
     train_dataloader = DataLoader(train_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers,pin_memory=args.pin_memory,drop_last=train_drop_last)
     val_dataloder = DataLoader(val_dataset,args.batch_size,shuffle=False,num_workers=args.num_workers+8,pin_memory=args.pin_memory,drop_last=val_drop_last)
+    
+        
     train(args,chkpt,train_dataloader,val_dataloder)

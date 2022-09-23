@@ -6,5 +6,4 @@ dataset:
   voxel_size: 0.3
   pooling: 3  # max pooling of semi-dense image, must be odd
   extend_intran: [2.5,2.5]
-model:
-  depth_scale: 100.0
+
