@@ -107,10 +107,8 @@ dataset:
   val: [6,7]
   test: [8,9,10]
   cam_id: 2  # (2 or 3)
-  voxel_size: 0.05  # voxel downsampling of raw pcd data
   pooling: 5  # max pooling of semi-dense image, must be odd
-model:
-  depth_scale: 100.0
+
 
 ```
 * KITTI Odometry has 22 sequences, in our config.yml, seq `0,1,2,3,4,5` are set for train and seq `6,7` are set for validation.
