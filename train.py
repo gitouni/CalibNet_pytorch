@@ -260,7 +260,7 @@ if __name__ == "__main__":
     else:  # check length
         val_seq = np.loadtxt(val_perturb_file,delimiter=',')
         if val_length != val_seq.shape[0]:
-            print_warning('Incompatiable validation lenght {}!={}'.format(val_length,val_seq.shape[0]))
+            print_warning('Incompatiable validation length {}!={}'.format(val_length,val_seq.shape[0]))
             transform = utils.transform.UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
             perturb_arr = np.zeros([val_length,6])
             for i in range(val_length):
