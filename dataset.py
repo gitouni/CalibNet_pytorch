@@ -186,7 +186,7 @@ class KITTI_perturb(Dataset):
         if self.file is not None:
             self.perturb = torch.from_numpy(np.loadtxt(self.file,dtype=np.float32,delimiter=','))[None,...]  # (1,N,6)
         else:
-            self.transform = transform.RandomTransformSE3(max_deg,max_tran,mag_randomly)
+            self.transform = transform.UniformTransformSE3(max_deg,max_tran,mag_randomly)
     def __len__(self):
         return len(self.dataset)
     def __getitem__(self, index):

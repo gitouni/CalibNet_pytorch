@@ -12,14 +12,14 @@ import loss as loss_utils
 import utils
 from tqdm import tqdm
 import numpy as np
-from utils.transform import RandomTransformSE3
+from utils.transform import UniformTransformSE3
 
 def options():
     parser = argparse.ArgumentParser()
     # dataset
     parser.add_argument("--config",type=str,default='config.yml')
     parser.add_argument("--dataset_path",type=str,default='data/')
-    parser.add_argument("--skip_frame",type=int,default=30,help='skip frame of dataset')
+    parser.add_argument("--skip_frame",type=int,default=5,help='skip frame of dataset')
     parser.add_argument("--pcd_sample",type=int,default=4096)
     parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
     parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
@@ -35,7 +35,7 @@ def options():
     parser.add_argument("--epoch",type=int,default=100)
     parser.add_argument("--log_dir",default='log/')
     parser.add_argument("--checkpoint_dir",type=str,default="checkpoint/")
-    parser.add_argument("--name",type=str,default='cam2_oneter_resize2')
+    parser.add_argument("--name",type=str,default='cam2_oneter')
     parser.add_argument("--optim",type=str,default='sgd',choices=['sgd','adam'])
     parser.add_argument("--lr0",type=float,default=5e-4)
     parser.add_argument("--momentum",type=float,default=0.9)
@@ -247,14 +247,26 @@ if __name__ == "__main__":
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
                                      extend_intran=CONFIG['dataset']['extend_intran'])
-    if not os.path.exists(os.path.join(args.checkpoint_dir,"val_seq.csv")):
+    val_perturb_file = os.path.join(args.checkpoint_dir,"val_seq.csv")
+    val_length = len(val_dataset)
+    if not os.path.exists(val_perturb_file):
         print_highlight("validation pertub file dosen't exist, create one.")
-        transform = RandomTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
+        transform = UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
         val_length = len(val_dataset)
         perturb_arr = np.zeros([val_length,6])
         for i in range(val_length):
             perturb_arr[i,:] = transform.generate_transform().cpu().numpy()
-        np.savetxt(os.path.join(args.checkpoint_dir,"val_seq.csv"),perturb_arr,delimiter=',')
+        np.savetxt(val_perturb_file,perturb_arr,delimiter=',')
+    else:  # check length
+        val_seq = np.loadtxt(val_perturb_file,delimiter=',')
+        if val_length != val_seq.shape[0]:
+            print_warning('Incompatiable validation lenght {}!={}'.format(val_length,val_seq.shape[0]))
+            transform = utils.transform.UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
+            perturb_arr = np.zeros([val_length,6])
+            for i in range(val_length):
+                perturb_arr[i,:] = transform.generate_transform().cpu().numpy()
+            np.savetxt(val_perturb_file,perturb_arr,delimiter=',')
+            print_highlight('Validation perturb file rewritten.')
     val_dataset = KITTI_perturb(val_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                 pooling_size=CONFIG['dataset']['pooling'],
                                 file=os.path.join(args.checkpoint_dir,"val_seq.csv"))
