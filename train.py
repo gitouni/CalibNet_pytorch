@@ -1,4 +1,5 @@
 import argparse
+from asyncio.log import logger
 import os
 import yaml
 import torch
@@ -41,7 +42,7 @@ def options():
     parser.add_argument("--momentum",type=float,default=0.9)
     parser.add_argument("--weight_decay",type=float,default=5e-6)
     parser.add_argument("--lr_exp_decay",type=float,default=0.98)
-    parser.add_argument("--clip_grad",type=float,default=10.0)
+    parser.add_argument("--clip_grad",type=float,default=2.0)
     # setting
     parser.add_argument("--scale",type=float,default=50.0,help='scale factor of pcd normlization in loss')
     parser.add_argument("--inner_iter",type=int,default=1,help='inner iter of calibnet')
@@ -64,6 +65,7 @@ def val(args,model:CalibNet,val_loader:DataLoader):
     total_dR = 0
     total_dT = 0
     total_loss = 0
+    total_se3_loss = 0
     with tqdm_console:
         tqdm_console.set_description_str('Val')
         for batch in val_loader:
@@ -85,39 +87,44 @@ def val(args,model:CalibNet,val_loader:DataLoader):
                 extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
                 uncalibed_depth_img, uncalibed_pcd = depth_generator(extran,uncalibed_pcd)
                 g0 = extran.bmm(g0)
-            dR,dT = loss_utils.geodesic_distance(g0.bmm(igt))
+            err_g = g0.bmm(igt)
+            dR,dT = loss_utils.geodesic_distance(err_g)
             total_dR += dR.item()
             total_dT += dT.item()
+            se3_loss = torch.linalg.norm(utils.se3.log(err_g),dim=1).mean()
+            total_se3_loss += se3_loss.item()
             loss1 = photo_loss(calibed_depth_img,uncalibed_depth_img)
             loss2 = chamfer_loss(calibed_pcd,uncalibed_pcd)
             loss = alpha*loss1 + beta*loss2
             total_loss += loss.item()
-            tqdm_console.set_postfix_str('photo:{:.3f},chamfer:{:.3f},dR:{:.3f}, dT:{:.3f}'.format(loss1,loss2,dR,dT))
+            tqdm_console.set_postfix_str('dR:{:.4f}, dT:{:.4f},se3_loss:{:.4f}'.format(loss1,loss2,se3_loss))
             tqdm_console.update(1)
     total_dR /= len(val_loader)
     total_dT /= len(val_loader)
     total_loss /= len(val_loader)
-    tqdm_console.set_postfix_str('dR:{:.4f}, dT:{:.4f}, loss:{:.4f}'.format(total_dR,total_dT,total_loss))
-    tqdm_console.update()
-    tqdm_console.close()
-    return total_loss, total_dR, total_dT
+    total_se3_loss /= len(val_loader)
+    return total_loss, total_dR, total_dT, total_se3_loss
 
 
 def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
+    device = torch.device(args.device)
+    model.to(device)
     model = CalibNet(backbone_pretrained=False,depth_scale=args.scale)
     if args.optim == 'sgd':
         optimizer = torch.optim.SGD(model.parameters(),args.lr0,momentum=args.momentum,weight_decay=args.weight_decay)
     else:
         optimizer = torch.optim.Adam(model.parameters(),args.lr0,weight_decay=args.weight_decay)
+    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=args.lr_exp_decay)
     if args.pretrained:
         if os.path.exists(args.pretrained) and os.path.isfile(args.pretrained):
-            model.load_state_dict(torch.load(args.pretrained,map_location='cpu')['model'])
+            model.load_state_dict(torch.load(args.pretrained)['model'])
             print_highlight('Pretrained model loaded from {:s}'.format(args.pretrained))
         else:
             print_warning('Invalid pretrained path: {:s}'.format(args.pretrained))
     if chkpt is not None:
         model.load_state_dict(chkpt['model'])
         optimizer.load_state_dict(chkpt['optimizer'])
+        scheduler.load_state_dict(chkpt['scheduler'])
         start_epoch = chkpt['epoch'] + 1
         min_loss = chkpt['min_loss']
         log_mode = 'a'
@@ -128,9 +135,6 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
     if not torch.cuda.is_available():
         args.device = 'cpu'
         print_warning('CUDA is not available, use CPU to run')
-    device = torch.device(args.device)
-    model.to(device)
-    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=args.lr_exp_decay)
     log_mode = 'a' if chkpt is not None else 'w'
     logger = get_logger("{name}|Train".format(name=args.name),os.path.join(args.log_dir,args.name+'.log'),mode=log_mode)
     if chkpt is None:
@@ -190,14 +194,17 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
         tqdm_console.set_postfix_str("loss: {:.3f}, photo: {:.3f}, chamfer: {:.3f}".format(total_loss,total_photo_loss,total_chamfer_loss))
         tqdm_console.update()
         tqdm_console.close()
-        logger.info('Epoch {:03d}|{:03d}, loss:{:.6f}'.format(epoch+1,args.epoch,total_loss))
+        logger.info('Epoch {:03d}|{:03d}, train loss:{:.4f}'.format(epoch+1,args.epoch,total_loss))
         scheduler.step()
-        val_loss, loss_dR, loss_dT = val(args,model,val_loader)  # float 
-        if loss_dR+loss_dT < min_loss:
-            min_loss = loss_dR+loss_dT
+        val_loss, loss_dR, loss_dT, loss_se3 = val(args,model,val_loader)  # float 
+        logger.info('Epoch {:03d}|{:03d}, val se3 loss:{:.4f}, dR:{:.3f}, dT:{:.3f}'.format(epoch+1,args.epoch,
+                                                                                            loss_se3,loss_dR,loss_dT))
+        if loss_se3 < min_loss:
+            min_loss = loss_se3
             torch.save(dict(
                 model=model.state_dict(),
                 optimizer=optimizer.state_dict(),
+                scheduler=scheduler.state_dict(),
                 min_loss=min_loss,
                 epoch=epoch,
                 args=args.__dict__,
@@ -208,6 +215,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
         torch.save(dict(
                 model=model.state_dict(),
                 optimizer=optimizer.state_dict(),
+                scheduler=scheduler.state_dict(),
                 min_loss=min_loss,
                 epoch=epoch,
                 args=args.__dict__,
@@ -239,14 +247,14 @@ if __name__ == "__main__":
     train_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,train_split,CONFIG['dataset']['cam_id'],
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
-                                     extend_intran=CONFIG['dataset']['extend_intran'])
+                                     extend_ratio=CONFIG['dataset']['extend_ratio'])
     train_dataset = KITTI_perturb(train_dataset,args.max_deg,args.max_tran,args.mag_randomly,
                                   pooling_size=CONFIG['dataset']['pooling'])
     
     val_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,val_split,CONFIG['dataset']['cam_id'],
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
-                                     extend_intran=CONFIG['dataset']['extend_intran'])
+                                     extend_ratio=CONFIG['dataset']['extend_ratio'])
     val_perturb_file = os.path.join(args.checkpoint_dir,"val_seq.csv")
     val_length = len(val_dataset)
     if not os.path.exists(val_perturb_file):
@@ -260,7 +268,7 @@ if __name__ == "__main__":
     else:  # check length
         val_seq = np.loadtxt(val_perturb_file,delimiter=',')
         if val_length != val_seq.shape[0]:
-            print_warning('Incompatiable validation length {}!={}'.format(val_length,val_seq.shape[0]))
+            print_warning('Incompatiable validation lenght {}!={}'.format(val_length,val_seq.shape[0]))
             transform = utils.transform.UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
             perturb_arr = np.zeros([val_length,6])
             for i in range(val_length):
