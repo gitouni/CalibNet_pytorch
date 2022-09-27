@@ -88,7 +88,7 @@ ln -s /PATH/TO/MyData/dataset data
 ### Train
 The following command is fit with a 12GB GPU.
 ```bash
-python train.py --batch_size=8 --epoch=100 --inner_iter=1 --pcd_sample=4096 --name=cam2_oneiter
+python train.py --batch_size=8 --epoch=100 --inner_iter=1 --pcd_sample=4096 --name=cam2_oneiter --skip_frame=10
 ```
 
 ### Test
@@ -103,11 +103,11 @@ Relevant training logs can be found in [log](./log) dir.
 see `config.yml` for dataset setting.
 ```yaml
 dataset:
-  train: [0,1,2,3,4,5]
-  val: [6,7]
-  test: [8,9,10]
+  train: [0,1,2,3,4,5,6,7]
+  val: [8,9,10]
+  test: [11,12,13]
   cam_id: 2  # (2 or 3)
-  pooling: 5  # max pooling of semi-dense image, must be odd
+  pooling: 3 # max pooling of semi-dense image, must be odd
 
 
 ```
