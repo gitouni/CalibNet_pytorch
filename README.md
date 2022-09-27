@@ -99,7 +99,7 @@ python test.py --inner_iter=1 --pretrained=./checkpoint/cam2_oneiter_best.pth --
 
 Relevant training logs can be found in [log](./log) dir.
 
-* Results on KITTI Odometry Test (Seq = 11,12,13, one iter)
+### Results on KITTI Odometry Test (Seq = 11,12,13, one iter)
 
 Rotation (deg) X:3.0023,Y:2.9971,Z:3.0498
 
