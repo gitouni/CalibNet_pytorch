@@ -15,7 +15,7 @@ def options():
     # dataset
     parser.add_argument("--config",type=str,default='config.yml')
     parser.add_argument("--dataset_path",type=str,default='data/')
-    parser.add_argument("--skip_frame",type=int,default=5,help='skip frame of dataset')
+    parser.add_argument("--skip_frame",type=int,default=1,help='skip frame of dataset')
     parser.add_argument("--pcd_sample",type=int,default=-1) # -1 means total sample
     parser.add_argument("--max_deg",type=float,default=10)  # 10deg in each axis  (see the paper)
     parser.add_argument("--max_tran",type=float,default=0.2)   # 0.2m in each axis  (see the paper)
@@ -24,28 +24,24 @@ def options():
     parser.add_argument("--batch_size",type=int,default=1,choices=[1],help='batch size of test dataloader must be 1')
     parser.add_argument("--num_workers",type=int,default=12)
     parser.add_argument("--pin_memory",type=bool,default=True,help='set it to False if your CPU memory is insufficient')
-    parser.add_argument("--perturb_file",type=str,default='test_perturb.csv')
+    parser.add_argument("--perturb_file",type=str,default='test_seq.csv')
     # schedule
     parser.add_argument("--device",type=str,default='cuda:0')
     parser.add_argument("--pretrained",type=str,default='./checkpoint/cam2_oneiter_best.pth')
     parser.add_argument("--log_dir",default='log/')
+    parser.add_argument("--checkpoint_dir",type=str,default="checkpoint/")
     parser.add_argument("--res_dir",type=str,default='res/')
-    parser.add_argument("--name",type=str,default='cam2_oneiter')
+    parser.add_argument("--name",type=str,default='cam2_oneiter_resize')
     # setting
     parser.add_argument("--inner_iter",type=int,default=1,help='inner iter of calibnet')
     # if CUDA is out of memory, please reduce batch_size, pcd_sample or inner_iter
     return parser.parse_args()
 
-def test(args,test_loader):
-    if CREATE_FILE:
-        perturb_arr = np.zeros((len(test_loader),6))
-    model = CalibNet(depth_scale=CONFIG['model']['depth_scale'])
-    model.load_state_dict(torch.load(args.pretrained,map_location='cpu')['model'])
-    if not torch.cuda.is_available():
-        args.device = 'cpu'
-        print_warning('CUDA is not available, use CPU to run')
+def test(args,chkpt:dict,test_loader):
+    model = CalibNet(depth_scale=args.scale)
     device = torch.device(args.device)
     model.to(device)
+    model.load_state_dict(chkpt['model'])
     model.eval()
     logger = get_logger('{name}-Test'.format(name=args.name),os.path.join(args.log_dir,args.name+'_test.log'),mode='w')
     logger.debug(args)
@@ -58,8 +54,6 @@ def test(args,test_loader):
         uncalibed_depth_img = batch['uncalibed_depth_img'].to(device)
         InTran = batch['InTran'][0].to(device)
         igt = batch['igt'].to(device)
-        if CREATE_FILE:
-            perturb_arr[i,:] = utils.se3.log(igt).squeeze(0).detach().cpu().numpy()
         img_shape = rgb_img.shape[-2:]
         depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,pcd_range,CONFIG['dataset']['pooling'])
         # model(rgb_img,uncalibed_depth_img)
@@ -78,18 +72,21 @@ def test(args,test_loader):
     np.save(os.path.join(os.path.join(args.res_dir,'{name}.npy'.format(name=args.name))),res_npy)
     logger.info('Angle error (deg): X:{:.4f},Y:{:.4f},Z:{:.4f}'.format(*np.degrees(np.mean(res_npy[:,:3],axis=0))))
     logger.info('Translation error (m): X:{:.4f},Y:{:.4f},Z:{:.4f}'.format(*np.mean(res_npy[:,3:],axis=0)))
-    if CREATE_FILE:
-        np.savetxt(perturb_path,perturb_arr,fmt="%.6f",delimiter=',')   
-        print_highlight('perturb file saved to {:s}'.format(perturb_path))
 
 if __name__ == "__main__":
     args = options()
+    if not torch.cuda.is_available():
+        args.device = 'cpu'
+        print_warning('CUDA is not available, use CPU to run')
     os.makedirs(args.log_dir,exist_ok=True)
     with open(args.config,'r')as f:
-        CONFIG = yaml.load(f,yaml.SafeLoader)
-    assert isinstance(CONFIG,dict), 'Unknown config format!'
+        CONFIG : dict= yaml.load(f,yaml.SafeLoader)
     if os.path.exists(args.pretrained) and os.path.isfile(args.pretrained):
-        args.resize_ratio = torch.load(args.pretrained,map_location='cpu')['args']['resize_ratio']
+        chkpt = torch.load(args.pretrained)
+        CONFIG.update(chkpt['config'])
+        update_args = ['resize_ratio','name','scale']
+        for up_arg in update_args:
+            setattr(args,up_arg,chkpt['args'][up_arg]) 
     else:
         raise FileNotFoundError('pretrained checkpoint {:s} not found!'.format(os.path.abspath(args.pretrained)))
     print_highlight('args have been received, please wait for dataloader...')
@@ -98,18 +95,28 @@ if __name__ == "__main__":
     test_dataset = BaseKITTIDataset(args.dataset_path,args.batch_size,test_split,CONFIG['dataset']['cam_id'],
                                      skip_frame=args.skip_frame,voxel_size=CONFIG['dataset']['voxel_size'],
                                      pcd_sample_num=args.pcd_sample,resize_ratio=args.resize_ratio,
-                                     extend_intran=CONFIG['dataset']['extend_intran'])
+                                     extend_ratio=CONFIG['dataset']['extend_ratio'])
     os.makedirs(args.res_dir,exist_ok=True)
-    perturb_path = os.path.join(args.res_dir,args.perturb_file)
-    if not os.path.exists(perturb_path) or not os.path.isfile(perturb_path):
-        CREATE_FILE = True
-        dataloader_file = None
-        print_highlight('perturb file not exist, create one')
-    else:
-        CREATE_FILE = False
-        dataloader_file = perturb_path
-        print_highlight('perturb file {:s} will be used!'.format(perturb_path))
+    test_perturb_file = os.path.join(args.checkpoint_dir,"test_seq.csv")
+    test_length = len(test_dataset)
+    if not os.path.exists(test_perturb_file):
+        print_highlight("validation pertub file dosen't exist, create one.")
+        transform = utils.transform.UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
+        perturb_arr = np.zeros([test_length,6])
+        for i in range(test_length):
+            perturb_arr[i,:] = transform.generate_transform().cpu().numpy()
+        np.savetxt(test_perturb_file,perturb_arr,delimiter=',')
+    else:  # check length
+        test_seq = np.loadtxt(test_perturb_file,delimiter=',')
+        if test_length != test_seq.shape[0]:
+            print_warning('Incompatiable test length {}!={}'.format(test_length,test_seq.shape[0]))
+            transform = utils.transform.UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
+            perturb_arr = np.zeros([test_length,6])
+            for i in range(test_length):
+                perturb_arr[i,:] = transform.generate_transform().cpu().numpy()
+            np.savetxt(test_perturb_file,perturb_arr,delimiter=',')
+            print_highlight('Validation perturb file rewritten.')
     test_dataset = KITTI_perturb(test_dataset,args.max_deg,args.max_tran,args.mag_randomly,
-                                pooling_size=CONFIG['dataset']['pooling'],file=perturb_path)
+                                pooling_size=CONFIG['dataset']['pooling'],file=test_perturb_file)
     test_dataloader = DataLoader(test_dataset,args.batch_size,num_workers=args.num_workers,pin_memory=args.pin_memory)
-    test(args,test_dataloader)
+    test(args,chkpt,test_dataloader)

@@ -91,7 +91,7 @@ def val(args,model:CalibNet,val_loader:DataLoader):
             dR,dT = loss_utils.geodesic_distance(err_g)
             total_dR += dR.item()
             total_dT += dT.item()
-            se3_loss = torch.linalg.norm(utils.se3.log(err_g),dim=1).mean()
+            se3_loss = torch.linalg.norm(utils.se3.log(err_g),dim=1).mean()/6
             total_se3_loss += se3_loss.item()
             loss1 = photo_loss(calibed_depth_img,uncalibed_depth_img)
             loss2 = chamfer_loss(calibed_pcd,uncalibed_pcd)
@@ -108,8 +108,8 @@ def val(args,model:CalibNet,val_loader:DataLoader):
 
 def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
     device = torch.device(args.device)
-    model.to(device)
     model = CalibNet(backbone_pretrained=False,depth_scale=args.scale)
+    model.to(device)
     if args.optim == 'sgd':
         optimizer = torch.optim.SGD(model.parameters(),args.lr0,momentum=args.momentum,weight_decay=args.weight_decay)
     else:
@@ -197,8 +197,6 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
         logger.info('Epoch {:03d}|{:03d}, train loss:{:.4f}'.format(epoch+1,args.epoch,total_loss))
         scheduler.step()
         val_loss, loss_dR, loss_dT, loss_se3 = val(args,model,val_loader)  # float 
-        logger.info('Epoch {:03d}|{:03d}, val se3 loss:{:.4f}, dR:{:.3f}, dT:{:.3f}'.format(epoch+1,args.epoch,
-                                                                                            loss_se3,loss_dR,loss_dT))
         if loss_se3 < min_loss:
             min_loss = loss_se3
             torch.save(dict(
@@ -221,7 +219,7 @@ def train(args,chkpt,train_loader:DataLoader,val_loader:DataLoader):
                 args=args.__dict__,
                 config=CONFIG
             ),os.path.join(args.checkpoint_dir,'{name}_last.pth'.format(name=args.name)))
-        logger.info('Evaluate val_loss:{:.6f}, loss_dR:{:.6f}, loss_dT:{:.6f}'.format(val_loss,loss_dR,loss_dT))
+        logger.info('Evaluate loss_dR:{:.6f}, loss_dT:{:.6f}, se3_loss:{:.6f}'.format(loss_dR,loss_dT,loss_se3))
             
             
             
@@ -260,7 +258,6 @@ if __name__ == "__main__":
     if not os.path.exists(val_perturb_file):
         print_highlight("validation pertub file dosen't exist, create one.")
         transform = UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
-        val_length = len(val_dataset)
         perturb_arr = np.zeros([val_length,6])
         for i in range(val_length):
             perturb_arr[i,:] = transform.generate_transform().cpu().numpy()
@@ -268,7 +265,7 @@ if __name__ == "__main__":
     else:  # check length
         val_seq = np.loadtxt(val_perturb_file,delimiter=',')
         if val_length != val_seq.shape[0]:
-            print_warning('Incompatiable validation lenght {}!={}'.format(val_length,val_seq.shape[0]))
+            print_warning('Incompatiable validation length {}!={}'.format(val_length,val_seq.shape[0]))
             transform = utils.transform.UniformTransformSE3(args.max_deg,args.max_tran,args.mag_randomly)
             perturb_arr = np.zeros([val_length,6])
             for i in range(val_length):

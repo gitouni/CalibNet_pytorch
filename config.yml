@@ -1,9 +1,9 @@
 dataset:
   train: [0,1,2,3,4,5,6,7]
-  val: [8,9]
-  test: [10,11]
+  val: [8,9,10]
+  test: [11,12,13]
   cam_id: 2  # (2 or 3)
-  voxel_size: 0.3
+  voxel_size: 0.1
   pooling: 3  # max pooling of semi-dense image, must be odd
-  extend_intran: [2.5,2.5]
+  extend_ratio: [2.5,2.5]
 
