@@ -116,3 +116,7 @@ dataset:
 * `cam_id=2` represents left color image dataset and `cam_id=3` represents the right.
 
 * set `pooling` paramter (only support odd numbers) to change max pooling of preprocessing for depth map.
+<details>
+  <summary> Unsolved Problems </summary>
+  `--inner_iter` requires to be set to `1` and inference with more iterations does not help with self-calibration, which is incompatiable with the original paper.
+</details>
