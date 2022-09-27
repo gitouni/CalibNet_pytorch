@@ -31,7 +31,7 @@ def options():
     parser.add_argument("--log_dir",default='log/')
     parser.add_argument("--checkpoint_dir",type=str,default="checkpoint/")
     parser.add_argument("--res_dir",type=str,default='res/')
-    parser.add_argument("--name",type=str,default='cam2_oneiter_resize')
+    parser.add_argument("--name",type=str,default='cam2_oneiter')
     # setting
     parser.add_argument("--inner_iter",type=int,default=1,help='inner iter of calibnet')
     # if CUDA is out of memory, please reduce batch_size, pcd_sample or inner_iter
