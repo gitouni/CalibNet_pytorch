@@ -95,7 +95,7 @@ python train.py --batch_size=8 --epoch=100 --inner_iter=1 --pcd_sample=4096 --na
 ```bash
 python test.py --inner_iter=1 --pretrained=./checkpoint/cam2_oneiter_best.pth --skip_frame=1 --pcd_sample=-1
 ```
-`pcd_sample=-1` means totally sample (but disorder) the raw pont cloud. However, you need to keep `batch_size=1` to avoid batch collect_fn error.
+`pcd_sample=-1` means totally sample (but disorder) the raw point cloud. However, you need to keep `batch_size=1` to avoid batch collect_fn error.
 
 Relevant training logs can be found in [log](./log) dir.
 
