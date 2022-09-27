@@ -1,203 +1,206 @@
-[DEBUG]:cam2_oneiter|Train, 2022-07-24 20:04:21,944, Namespace(alpha=1.0, batch_size=8, beta=0.3, checkpoint_dir='checkpoint/', clip_grad=10.0, config='config.yml', dataset_path='data/', device='cuda:0', epoch=100, inner_iter=1, log_dir='log/', lr0=0.0005, lr_exp_decay=0.98, mag_randomly=True, max_deg=10, max_tran=0.2, momentum=0.9, name='cam2_oneiter', num_workers=12, optim='sgd', pcd_sample=4096, pin_memory=True, pretrained='', resize=True, resize_ratio=[1.0, 1.0], resume='', scale=50.0, skip_frame=5, weight_decay=5e-06)
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:07:09,560, Epoch 001|100, loss:0.043335
-[DEBUG]:cam2_oneiter|Train, 2022-07-24 20:07:30,238, Best model saved (Epoch 1)
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:07:30,366, Evaluate val_loss:0.044274, loss_dR:0.089733, loss_dT:0.082752
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:10:22,274, Epoch 002|100, loss:0.043009
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:10:44,053, Evaluate val_loss:0.055955, loss_dR:0.112110, loss_dT:0.090135
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:13:35,824, Epoch 003|100, loss:0.044505
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:13:57,463, Evaluate val_loss:0.049688, loss_dR:0.103100, loss_dT:0.077424
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:16:48,260, Epoch 004|100, loss:0.044045
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:17:10,092, Evaluate val_loss:0.052493, loss_dR:0.109875, loss_dT:0.072718
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:19:59,564, Epoch 005|100, loss:0.043256
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:20:20,630, Evaluate val_loss:0.049078, loss_dR:0.102955, loss_dT:0.080908
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:23:09,439, Epoch 006|100, loss:0.042609
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:23:30,999, Evaluate val_loss:0.051984, loss_dR:0.103764, loss_dT:0.070229
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:26:20,757, Epoch 007|100, loss:0.041908
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:26:41,703, Evaluate val_loss:0.046698, loss_dR:0.093854, loss_dT:0.083822
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:29:31,365, Epoch 008|100, loss:0.043756
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:29:52,807, Evaluate val_loss:0.050859, loss_dR:0.107714, loss_dT:0.080510
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:32:43,483, Epoch 009|100, loss:0.040702
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:33:04,204, Evaluate val_loss:0.047309, loss_dR:0.102791, loss_dT:0.083232
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:35:56,027, Epoch 010|100, loss:0.041855
-[DEBUG]:cam2_oneiter|Train, 2022-07-24 20:36:16,664, Best model saved (Epoch 10)
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:36:16,790, Evaluate val_loss:0.038112, loss_dR:0.072877, loss_dT:0.071082
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:39:08,617, Epoch 011|100, loss:0.039502
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:39:30,349, Evaluate val_loss:0.041500, loss_dR:0.083804, loss_dT:0.076999
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:42:19,805, Epoch 012|100, loss:0.039336
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:42:40,846, Evaluate val_loss:0.040758, loss_dR:0.081051, loss_dT:0.075633
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:45:32,054, Epoch 013|100, loss:0.039124
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:45:53,354, Evaluate val_loss:0.041269, loss_dR:0.078954, loss_dT:0.084682
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:48:42,889, Epoch 014|100, loss:0.038784
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:49:03,584, Evaluate val_loss:0.039338, loss_dR:0.078824, loss_dT:0.083592
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:51:54,020, Epoch 015|100, loss:0.039654
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:52:15,503, Evaluate val_loss:0.038160, loss_dR:0.076609, loss_dT:0.090863
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:55:06,415, Epoch 016|100, loss:0.037459
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:55:28,045, Evaluate val_loss:0.039560, loss_dR:0.079510, loss_dT:0.094794
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:58:18,850, Epoch 017|100, loss:0.036830
-[INFO]:cam2_oneiter|Train, 2022-07-24 20:58:39,630, Evaluate val_loss:0.044386, loss_dR:0.086190, loss_dT:0.091260
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:01:28,778, Epoch 018|100, loss:0.036524
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:01:49,554, Evaluate val_loss:0.037758, loss_dR:0.071518, loss_dT:0.098405
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:04:40,620, Epoch 019|100, loss:0.034678
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:05:01,286, Evaluate val_loss:0.038540, loss_dR:0.069855, loss_dT:0.092060
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:07:50,288, Epoch 020|100, loss:0.034886
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:08:10,873, Evaluate val_loss:0.041920, loss_dR:0.079317, loss_dT:0.089960
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:11:03,036, Epoch 021|100, loss:0.034545
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:11:23,893, Evaluate val_loss:0.037672, loss_dR:0.070984, loss_dT:0.087218
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:14:14,750, Epoch 022|100, loss:0.034394
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:14:36,639, Evaluate val_loss:0.035272, loss_dR:0.068908, loss_dT:0.084417
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:17:27,693, Epoch 023|100, loss:0.033950
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:17:48,343, Evaluate val_loss:0.033679, loss_dR:0.068679, loss_dT:0.088835
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:20:40,069, Epoch 024|100, loss:0.033955
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:21:01,091, Evaluate val_loss:0.036769, loss_dR:0.068815, loss_dT:0.091532
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:23:52,701, Epoch 025|100, loss:0.032151
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:24:13,939, Evaluate val_loss:0.034437, loss_dR:0.065924, loss_dT:0.082893
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:27:05,091, Epoch 026|100, loss:0.032256
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:27:26,502, Evaluate val_loss:0.033680, loss_dR:0.063877, loss_dT:0.087785
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:30:17,268, Epoch 027|100, loss:0.031749
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:30:38,190, Evaluate val_loss:0.035227, loss_dR:0.064098, loss_dT:0.090049
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:33:29,251, Epoch 028|100, loss:0.032461
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:33:50,716, Evaluate val_loss:0.032544, loss_dR:0.062687, loss_dT:0.092390
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:36:39,509, Epoch 029|100, loss:0.032381
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:37:00,781, Evaluate val_loss:0.031154, loss_dR:0.064273, loss_dT:0.092210
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:39:49,605, Epoch 030|100, loss:0.031211
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:40:10,440, Evaluate val_loss:0.032697, loss_dR:0.060894, loss_dT:0.092120
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:43:00,825, Epoch 031|100, loss:0.031116
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:43:22,314, Evaluate val_loss:0.033917, loss_dR:0.063942, loss_dT:0.090244
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:46:12,756, Epoch 032|100, loss:0.031106
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:46:34,115, Evaluate val_loss:0.032590, loss_dR:0.063995, loss_dT:0.090145
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:49:23,545, Epoch 033|100, loss:0.030462
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:49:44,781, Evaluate val_loss:0.031648, loss_dR:0.063968, loss_dT:0.089950
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:52:37,917, Epoch 034|100, loss:0.030418
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:52:59,023, Evaluate val_loss:0.032874, loss_dR:0.062556, loss_dT:0.095239
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:55:51,456, Epoch 035|100, loss:0.030174
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:56:12,170, Evaluate val_loss:0.030063, loss_dR:0.058957, loss_dT:0.088704
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:59:01,209, Epoch 036|100, loss:0.030265
-[INFO]:cam2_oneiter|Train, 2022-07-24 21:59:22,122, Evaluate val_loss:0.030355, loss_dR:0.061121, loss_dT:0.090593
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:02:11,087, Epoch 037|100, loss:0.030522
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:02:32,226, Evaluate val_loss:0.032699, loss_dR:0.061784, loss_dT:0.088987
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:05:21,676, Epoch 038|100, loss:0.030941
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:05:42,706, Evaluate val_loss:0.030346, loss_dR:0.063179, loss_dT:0.095671
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:08:31,848, Epoch 039|100, loss:0.029964
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:08:52,774, Evaluate val_loss:0.031275, loss_dR:0.061147, loss_dT:0.094509
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:11:43,292, Epoch 040|100, loss:0.029982
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:12:04,559, Evaluate val_loss:0.030892, loss_dR:0.059271, loss_dT:0.091088
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:14:57,020, Epoch 041|100, loss:0.029873
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:15:18,212, Evaluate val_loss:0.030093, loss_dR:0.057165, loss_dT:0.092457
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:18:09,240, Epoch 042|100, loss:0.029462
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:18:30,027, Evaluate val_loss:0.031288, loss_dR:0.060166, loss_dT:0.094032
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:21:21,205, Epoch 043|100, loss:0.029536
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:21:42,260, Evaluate val_loss:0.030769, loss_dR:0.058785, loss_dT:0.092189
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:24:34,813, Epoch 044|100, loss:0.029081
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:24:56,260, Evaluate val_loss:0.030646, loss_dR:0.059367, loss_dT:0.093853
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:27:48,240, Epoch 045|100, loss:0.029439
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:28:09,692, Evaluate val_loss:0.031895, loss_dR:0.060533, loss_dT:0.096562
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:30:58,647, Epoch 046|100, loss:0.029511
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:31:19,924, Evaluate val_loss:0.030247, loss_dR:0.056917, loss_dT:0.094320
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:34:12,345, Epoch 047|100, loss:0.028567
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:34:33,420, Evaluate val_loss:0.031241, loss_dR:0.056613, loss_dT:0.099001
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:37:25,703, Epoch 048|100, loss:0.029138
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:37:46,728, Evaluate val_loss:0.031772, loss_dR:0.058192, loss_dT:0.097718
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:40:36,562, Epoch 049|100, loss:0.029271
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:40:57,018, Evaluate val_loss:0.030646, loss_dR:0.056521, loss_dT:0.094735
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:43:46,206, Epoch 050|100, loss:0.028336
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:44:07,559, Evaluate val_loss:0.030950, loss_dR:0.055091, loss_dT:0.097287
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:46:57,892, Epoch 051|100, loss:0.028706
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:47:19,333, Evaluate val_loss:0.031707, loss_dR:0.055040, loss_dT:0.098214
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:50:10,969, Epoch 052|100, loss:0.028937
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:50:31,944, Evaluate val_loss:0.030886, loss_dR:0.055620, loss_dT:0.094332
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:53:22,012, Epoch 053|100, loss:0.028588
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:53:42,736, Evaluate val_loss:0.031524, loss_dR:0.055879, loss_dT:0.100102
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:56:33,043, Epoch 054|100, loss:0.028475
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:56:54,232, Evaluate val_loss:0.030079, loss_dR:0.055121, loss_dT:0.093954
-[INFO]:cam2_oneiter|Train, 2022-07-24 22:59:44,436, Epoch 055|100, loss:0.028586
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:00:05,767, Evaluate val_loss:0.030157, loss_dR:0.055347, loss_dT:0.093293
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:02:58,166, Epoch 056|100, loss:0.028207
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:03:19,392, Evaluate val_loss:0.030144, loss_dR:0.056304, loss_dT:0.094252
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:06:08,985, Epoch 057|100, loss:0.028506
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:06:29,740, Evaluate val_loss:0.029620, loss_dR:0.054572, loss_dT:0.094885
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:09:19,576, Epoch 058|100, loss:0.028322
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:09:40,708, Evaluate val_loss:0.031790, loss_dR:0.059297, loss_dT:0.093608
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:12:29,633, Epoch 059|100, loss:0.028270
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:12:50,408, Evaluate val_loss:0.030096, loss_dR:0.058348, loss_dT:0.093180
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:15:40,839, Epoch 060|100, loss:0.028128
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:16:02,072, Evaluate val_loss:0.030586, loss_dR:0.059374, loss_dT:0.094513
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:18:52,792, Epoch 061|100, loss:0.028561
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:19:14,128, Evaluate val_loss:0.031676, loss_dR:0.056994, loss_dT:0.093824
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:22:03,393, Epoch 062|100, loss:0.028523
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:22:24,917, Evaluate val_loss:0.030493, loss_dR:0.056132, loss_dT:0.094900
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:25:16,347, Epoch 063|100, loss:0.027760
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:25:37,593, Evaluate val_loss:0.030233, loss_dR:0.055068, loss_dT:0.095114
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:28:26,867, Epoch 064|100, loss:0.027819
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:28:48,146, Evaluate val_loss:0.031886, loss_dR:0.055547, loss_dT:0.095569
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:31:38,364, Epoch 065|100, loss:0.028116
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:31:59,920, Evaluate val_loss:0.031176, loss_dR:0.058193, loss_dT:0.094062
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:34:51,599, Epoch 066|100, loss:0.027854
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:35:12,690, Evaluate val_loss:0.030438, loss_dR:0.054077, loss_dT:0.095341
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:38:03,254, Epoch 067|100, loss:0.028419
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:38:24,094, Evaluate val_loss:0.031049, loss_dR:0.055660, loss_dT:0.096819
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:41:14,984, Epoch 068|100, loss:0.027821
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:41:36,781, Evaluate val_loss:0.031315, loss_dR:0.055002, loss_dT:0.096969
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:44:28,377, Epoch 069|100, loss:0.028137
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:44:49,405, Evaluate val_loss:0.030321, loss_dR:0.051556, loss_dT:0.097352
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:47:41,339, Epoch 070|100, loss:0.027993
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:48:03,047, Evaluate val_loss:0.030589, loss_dR:0.055499, loss_dT:0.096899
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:50:52,160, Epoch 071|100, loss:0.027717
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:51:13,544, Evaluate val_loss:0.031206, loss_dR:0.054611, loss_dT:0.094580
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:54:03,340, Epoch 072|100, loss:0.027552
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:54:24,557, Evaluate val_loss:0.030273, loss_dR:0.052848, loss_dT:0.095861
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:57:14,923, Epoch 073|100, loss:0.027752
-[INFO]:cam2_oneiter|Train, 2022-07-24 23:57:35,871, Evaluate val_loss:0.029826, loss_dR:0.052576, loss_dT:0.097350
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:00:28,214, Epoch 074|100, loss:0.027319
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:00:49,319, Evaluate val_loss:0.030266, loss_dR:0.053142, loss_dT:0.098042
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:03:39,373, Epoch 075|100, loss:0.027832
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:04:01,561, Evaluate val_loss:0.031198, loss_dR:0.053935, loss_dT:0.102746
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:06:51,507, Epoch 076|100, loss:0.027909
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:07:13,136, Evaluate val_loss:0.030603, loss_dR:0.054764, loss_dT:0.098810
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:10:03,466, Epoch 077|100, loss:0.027536
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:10:24,306, Evaluate val_loss:0.030564, loss_dR:0.054030, loss_dT:0.100157
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:13:14,577, Epoch 078|100, loss:0.027371
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:13:36,051, Evaluate val_loss:0.030440, loss_dR:0.054832, loss_dT:0.100554
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:16:29,057, Epoch 079|100, loss:0.027277
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:16:50,647, Evaluate val_loss:0.030060, loss_dR:0.053629, loss_dT:0.102739
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:19:42,949, Epoch 080|100, loss:0.027484
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:20:04,102, Evaluate val_loss:0.030073, loss_dR:0.053455, loss_dT:0.103235
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:22:53,467, Epoch 081|100, loss:0.027095
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:23:14,220, Evaluate val_loss:0.029976, loss_dR:0.052636, loss_dT:0.099388
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:26:04,073, Epoch 082|100, loss:0.027416
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:26:25,770, Evaluate val_loss:0.029018, loss_dR:0.051985, loss_dT:0.102416
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:29:18,047, Epoch 083|100, loss:0.026949
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:29:39,795, Evaluate val_loss:0.030981, loss_dR:0.053179, loss_dT:0.101613
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:32:30,228, Epoch 084|100, loss:0.027508
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:32:52,313, Evaluate val_loss:0.030614, loss_dR:0.055429, loss_dT:0.100622
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:35:41,910, Epoch 085|100, loss:0.027428
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:36:03,472, Evaluate val_loss:0.029137, loss_dR:0.053525, loss_dT:0.103090
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:38:55,638, Epoch 086|100, loss:0.026997
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:39:16,912, Evaluate val_loss:0.029703, loss_dR:0.055745, loss_dT:0.100184
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:42:08,659, Epoch 087|100, loss:0.026966
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:42:29,964, Evaluate val_loss:0.029115, loss_dR:0.052925, loss_dT:0.100183
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:45:22,156, Epoch 088|100, loss:0.027489
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:45:44,730, Evaluate val_loss:0.030116, loss_dR:0.051748, loss_dT:0.100011
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:48:37,065, Epoch 089|100, loss:0.027533
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:48:59,429, Evaluate val_loss:0.029981, loss_dR:0.053954, loss_dT:0.103054
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:51:49,023, Epoch 090|100, loss:0.027138
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:52:10,759, Evaluate val_loss:0.030276, loss_dR:0.055071, loss_dT:0.100124
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:55:00,737, Epoch 091|100, loss:0.027396
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:55:21,522, Evaluate val_loss:0.029678, loss_dR:0.054271, loss_dT:0.100297
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:58:10,617, Epoch 092|100, loss:0.026973
-[INFO]:cam2_oneiter|Train, 2022-07-25 00:58:32,183, Evaluate val_loss:0.029592, loss_dR:0.052050, loss_dT:0.099619
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:01:22,229, Epoch 093|100, loss:0.027195
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:01:43,066, Evaluate val_loss:0.030203, loss_dR:0.052627, loss_dT:0.099260
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:04:33,261, Epoch 094|100, loss:0.027266
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:04:54,460, Evaluate val_loss:0.030189, loss_dR:0.052847, loss_dT:0.099668
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:07:43,441, Epoch 095|100, loss:0.027072
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:08:04,053, Evaluate val_loss:0.030104, loss_dR:0.052819, loss_dT:0.100754
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:10:55,327, Epoch 096|100, loss:0.027430
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:11:17,318, Evaluate val_loss:0.029649, loss_dR:0.052035, loss_dT:0.101467
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:14:09,589, Epoch 097|100, loss:0.026990
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:14:31,763, Evaluate val_loss:0.030142, loss_dR:0.051555, loss_dT:0.100638
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:17:21,486, Epoch 098|100, loss:0.026909
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:17:42,391, Evaluate val_loss:0.030472, loss_dR:0.052678, loss_dT:0.101949
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:20:34,351, Epoch 099|100, loss:0.026829
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:20:55,924, Evaluate val_loss:0.030141, loss_dR:0.052191, loss_dT:0.101002
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:23:46,606, Epoch 100|100, loss:0.026753
-[INFO]:cam2_oneiter|Train, 2022-07-25 01:24:07,621, Evaluate val_loss:0.031292, loss_dR:0.054280, loss_dT:0.101073
+[DEBUG]:cam2_oneiter|Train, 2022-09-27 11:11:54,080, Namespace(alpha=1.0, batch_size=8, beta=0.3, checkpoint_dir='checkpoint/', clip_grad=2.0, config='config.yml', dataset_path='data/', device='cuda:0', epoch=100, inner_iter=1, log_dir='log/', lr0=0.0005, lr_exp_decay=0.98, mag_randomly=True, max_deg=10, max_tran=0.2, momentum=0.9, name='cam2_oneiter', num_workers=12, optim='sgd', pcd_sample=4096, pin_memory=True, pretrained='', resize_ratio=[1.0, 1.0], resume='', scale=50.0, skip_frame=10, weight_decay=5e-06)
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:13:19,417, Epoch 001|100, train loss:0.0246
+[DEBUG]:cam2_oneiter|Train, 2022-09-27 11:13:34,931, Best model saved (Epoch 1)
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:13:35,051, Evaluate loss_dR:0.069875, loss_dT:0.073477, se3_loss:0.030721
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:15:00,604, Epoch 002|100, train loss:0.0248
+[DEBUG]:cam2_oneiter|Train, 2022-09-27 11:15:15,849, Best model saved (Epoch 2)
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:15:15,995, Evaluate loss_dR:0.064579, loss_dT:0.075273, se3_loss:0.030016
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:16:42,371, Epoch 003|100, train loss:0.0247
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:16:57,357, Evaluate loss_dR:0.075377, loss_dT:0.076267, se3_loss:0.032524
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:18:23,347, Epoch 004|100, train loss:0.0245
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:18:38,061, Evaluate loss_dR:0.084278, loss_dT:0.075125, se3_loss:0.034090
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:20:04,253, Epoch 005|100, train loss:0.0226
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:20:19,265, Evaluate loss_dR:0.066797, loss_dT:0.075774, se3_loss:0.030570
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:21:45,190, Epoch 006|100, train loss:0.0226
+[DEBUG]:cam2_oneiter|Train, 2022-09-27 11:22:00,234, Best model saved (Epoch 6)
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:22:00,387, Evaluate loss_dR:0.063120, loss_dT:0.074865, se3_loss:0.029722
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:23:26,404, Epoch 007|100, train loss:0.0229
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:23:41,604, Evaluate loss_dR:0.066577, loss_dT:0.075732, se3_loss:0.030600
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:25:07,889, Epoch 008|100, train loss:0.0230
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:25:23,042, Evaluate loss_dR:0.068087, loss_dT:0.075675, se3_loss:0.030809
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:26:49,389, Epoch 009|100, train loss:0.0218
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:27:04,226, Evaluate loss_dR:0.068704, loss_dT:0.074929, se3_loss:0.030799
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:28:30,398, Epoch 010|100, train loss:0.0232
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:28:45,437, Evaluate loss_dR:0.073771, loss_dT:0.074760, se3_loss:0.031861
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:30:11,605, Epoch 011|100, train loss:0.0237
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:30:26,726, Evaluate loss_dR:0.072248, loss_dT:0.072248, se3_loss:0.031062
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:31:52,817, Epoch 012|100, train loss:0.0225
+[DEBUG]:cam2_oneiter|Train, 2022-09-27 11:32:07,952, Best model saved (Epoch 12)
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:32:08,093, Evaluate loss_dR:0.063994, loss_dT:0.074022, se3_loss:0.029631
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:33:34,559, Epoch 013|100, train loss:0.0228
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:33:49,795, Evaluate loss_dR:0.072510, loss_dT:0.074859, se3_loss:0.031570
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:35:15,812, Epoch 014|100, train loss:0.0222
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:35:30,394, Evaluate loss_dR:0.066382, loss_dT:0.073914, se3_loss:0.030290
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:36:55,292, Epoch 015|100, train loss:0.0228
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:37:09,889, Evaluate loss_dR:0.065482, loss_dT:0.072896, se3_loss:0.029777
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:38:34,837, Epoch 016|100, train loss:0.0213
+[DEBUG]:cam2_oneiter|Train, 2022-09-27 11:38:49,436, Best model saved (Epoch 16)
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:38:49,585, Evaluate loss_dR:0.060525, loss_dT:0.071325, se3_loss:0.028436
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:40:14,465, Epoch 017|100, train loss:0.0216
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:40:29,014, Evaluate loss_dR:0.061561, loss_dT:0.074939, se3_loss:0.029531
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:41:53,793, Epoch 018|100, train loss:0.0214
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:42:08,600, Evaluate loss_dR:0.065952, loss_dT:0.074790, se3_loss:0.030283
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:43:33,540, Epoch 019|100, train loss:0.0215
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:43:48,156, Evaluate loss_dR:0.064844, loss_dT:0.071493, se3_loss:0.029316
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:45:13,174, Epoch 020|100, train loss:0.0215
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:45:27,904, Evaluate loss_dR:0.074577, loss_dT:0.074182, se3_loss:0.031843
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:46:52,887, Epoch 021|100, train loss:0.0216
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:47:07,426, Evaluate loss_dR:0.064776, loss_dT:0.071836, se3_loss:0.029444
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:48:32,473, Epoch 022|100, train loss:0.0217
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:48:47,199, Evaluate loss_dR:0.063789, loss_dT:0.071568, se3_loss:0.029112
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:50:12,205, Epoch 023|100, train loss:0.0221
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:50:27,146, Evaluate loss_dR:0.067086, loss_dT:0.069990, se3_loss:0.029448
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:51:51,884, Epoch 024|100, train loss:0.0211
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:52:06,502, Evaluate loss_dR:0.064690, loss_dT:0.073856, se3_loss:0.029884
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:53:31,388, Epoch 025|100, train loss:0.0220
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:53:46,177, Evaluate loss_dR:0.060364, loss_dT:0.074496, se3_loss:0.029183
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:55:11,040, Epoch 026|100, train loss:0.0207
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:55:25,628, Evaluate loss_dR:0.061371, loss_dT:0.073498, se3_loss:0.029168
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:56:50,550, Epoch 027|100, train loss:0.0201
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:57:05,229, Evaluate loss_dR:0.065579, loss_dT:0.076505, se3_loss:0.030646
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:58:30,156, Epoch 028|100, train loss:0.0216
+[INFO]:cam2_oneiter|Train, 2022-09-27 11:58:44,895, Evaluate loss_dR:0.062293, loss_dT:0.077299, se3_loss:0.030286
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:00:09,806, Epoch 029|100, train loss:0.0207
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:00:24,310, Evaluate loss_dR:0.060898, loss_dT:0.076351, se3_loss:0.029782
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:01:49,426, Epoch 030|100, train loss:0.0211
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:02:04,381, Evaluate loss_dR:0.061781, loss_dT:0.076171, se3_loss:0.029904
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:03:29,289, Epoch 031|100, train loss:0.0214
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:03:43,727, Evaluate loss_dR:0.062013, loss_dT:0.074629, se3_loss:0.029623
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:05:08,496, Epoch 032|100, train loss:0.0212
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:05:22,920, Evaluate loss_dR:0.065305, loss_dT:0.075790, se3_loss:0.030488
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:06:47,758, Epoch 033|100, train loss:0.0206
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:07:02,519, Evaluate loss_dR:0.063691, loss_dT:0.075108, se3_loss:0.029897
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:08:27,811, Epoch 034|100, train loss:0.0209
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:08:42,622, Evaluate loss_dR:0.061876, loss_dT:0.077017, se3_loss:0.030031
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:10:07,424, Epoch 035|100, train loss:0.0196
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:10:22,279, Evaluate loss_dR:0.062688, loss_dT:0.078795, se3_loss:0.030610
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:11:47,210, Epoch 036|100, train loss:0.0203
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:12:02,046, Evaluate loss_dR:0.061903, loss_dT:0.077406, se3_loss:0.030133
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:13:26,895, Epoch 037|100, train loss:0.0206
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:13:41,348, Evaluate loss_dR:0.061719, loss_dT:0.077469, se3_loss:0.030167
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:15:06,796, Epoch 038|100, train loss:0.0196
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:15:21,516, Evaluate loss_dR:0.060917, loss_dT:0.078594, se3_loss:0.030197
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:16:46,520, Epoch 039|100, train loss:0.0205
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:17:01,220, Evaluate loss_dR:0.059867, loss_dT:0.080875, se3_loss:0.030558
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:18:26,107, Epoch 040|100, train loss:0.0199
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:18:40,897, Evaluate loss_dR:0.061117, loss_dT:0.079319, se3_loss:0.030473
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:20:05,746, Epoch 041|100, train loss:0.0203
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:20:20,845, Evaluate loss_dR:0.061814, loss_dT:0.079454, se3_loss:0.030632
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:21:45,689, Epoch 042|100, train loss:0.0195
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:22:00,572, Evaluate loss_dR:0.062318, loss_dT:0.078488, se3_loss:0.030468
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:23:25,700, Epoch 043|100, train loss:0.0201
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:23:40,193, Evaluate loss_dR:0.062891, loss_dT:0.081796, se3_loss:0.031349
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:25:05,043, Epoch 044|100, train loss:0.0198
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:25:19,656, Evaluate loss_dR:0.065479, loss_dT:0.080542, se3_loss:0.031431
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:26:44,746, Epoch 045|100, train loss:0.0196
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:26:59,583, Evaluate loss_dR:0.066029, loss_dT:0.081077, se3_loss:0.031716
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:28:24,658, Epoch 046|100, train loss:0.0203
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:28:39,412, Evaluate loss_dR:0.065079, loss_dT:0.081994, se3_loss:0.031790
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:30:04,495, Epoch 047|100, train loss:0.0201
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:30:19,165, Evaluate loss_dR:0.065452, loss_dT:0.081715, se3_loss:0.031733
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:31:44,152, Epoch 048|100, train loss:0.0202
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:31:59,094, Evaluate loss_dR:0.062522, loss_dT:0.083051, se3_loss:0.031547
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:33:23,892, Epoch 049|100, train loss:0.0197
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:33:38,626, Evaluate loss_dR:0.060464, loss_dT:0.082192, se3_loss:0.031050
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:35:03,509, Epoch 050|100, train loss:0.0198
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:35:18,078, Evaluate loss_dR:0.063074, loss_dT:0.082402, se3_loss:0.031520
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:36:42,879, Epoch 051|100, train loss:0.0195
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:36:57,815, Evaluate loss_dR:0.061941, loss_dT:0.082739, se3_loss:0.031430
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:38:22,621, Epoch 052|100, train loss:0.0192
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:38:37,278, Evaluate loss_dR:0.061057, loss_dT:0.083074, se3_loss:0.031318
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:40:01,999, Epoch 053|100, train loss:0.0202
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:40:16,614, Evaluate loss_dR:0.061373, loss_dT:0.082183, se3_loss:0.031151
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:41:41,489, Epoch 054|100, train loss:0.0196
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:41:56,007, Evaluate loss_dR:0.060205, loss_dT:0.081378, se3_loss:0.030725
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:43:20,753, Epoch 055|100, train loss:0.0198
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:43:35,706, Evaluate loss_dR:0.059609, loss_dT:0.081859, se3_loss:0.030734
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:45:00,237, Epoch 056|100, train loss:0.0199
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:45:14,889, Evaluate loss_dR:0.060651, loss_dT:0.080077, se3_loss:0.030486
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:46:39,519, Epoch 057|100, train loss:0.0193
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:46:54,070, Evaluate loss_dR:0.062117, loss_dT:0.081165, se3_loss:0.030998
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:48:18,729, Epoch 058|100, train loss:0.0188
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:48:33,393, Evaluate loss_dR:0.061632, loss_dT:0.080999, se3_loss:0.030913
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:49:58,351, Epoch 059|100, train loss:0.0196
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:50:13,070, Evaluate loss_dR:0.064625, loss_dT:0.081247, se3_loss:0.031456
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:51:37,725, Epoch 060|100, train loss:0.0199
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:51:52,348, Evaluate loss_dR:0.061774, loss_dT:0.081819, se3_loss:0.031040
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:53:17,153, Epoch 061|100, train loss:0.0196
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:53:31,733, Evaluate loss_dR:0.062773, loss_dT:0.081167, se3_loss:0.031049
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:54:56,333, Epoch 062|100, train loss:0.0187
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:55:11,458, Evaluate loss_dR:0.062453, loss_dT:0.082357, se3_loss:0.031309
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:56:36,244, Epoch 063|100, train loss:0.0186
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:56:50,725, Evaluate loss_dR:0.062474, loss_dT:0.082421, se3_loss:0.031296
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:58:15,405, Epoch 064|100, train loss:0.0192
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:58:29,705, Evaluate loss_dR:0.061008, loss_dT:0.083349, se3_loss:0.031285
+[INFO]:cam2_oneiter|Train, 2022-09-27 12:59:54,417, Epoch 065|100, train loss:0.0187
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:00:08,714, Evaluate loss_dR:0.060689, loss_dT:0.083517, se3_loss:0.031273
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:01:33,420, Epoch 066|100, train loss:0.0191
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:01:48,015, Evaluate loss_dR:0.062519, loss_dT:0.083777, se3_loss:0.031655
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:03:13,134, Epoch 067|100, train loss:0.0191
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:03:27,495, Evaluate loss_dR:0.062667, loss_dT:0.084010, se3_loss:0.031706
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:04:52,284, Epoch 068|100, train loss:0.0191
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:05:06,717, Evaluate loss_dR:0.061509, loss_dT:0.084736, se3_loss:0.031667
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:06:31,423, Epoch 069|100, train loss:0.0189
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:06:46,527, Evaluate loss_dR:0.062999, loss_dT:0.084778, se3_loss:0.031932
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:08:11,021, Epoch 070|100, train loss:0.0190
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:08:25,536, Evaluate loss_dR:0.063914, loss_dT:0.084996, se3_loss:0.032128
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:09:50,191, Epoch 071|100, train loss:0.0188
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:10:04,799, Evaluate loss_dR:0.062281, loss_dT:0.084828, se3_loss:0.031796
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:11:29,704, Epoch 072|100, train loss:0.0193
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:11:44,380, Evaluate loss_dR:0.063059, loss_dT:0.085191, se3_loss:0.032050
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:13:09,198, Epoch 073|100, train loss:0.0183
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:13:23,704, Evaluate loss_dR:0.066064, loss_dT:0.085511, se3_loss:0.032643
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:14:48,460, Epoch 074|100, train loss:0.0188
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:15:03,301, Evaluate loss_dR:0.063746, loss_dT:0.084204, se3_loss:0.031881
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:16:27,997, Epoch 075|100, train loss:0.0185
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:16:42,786, Evaluate loss_dR:0.063153, loss_dT:0.084096, se3_loss:0.031738
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:18:07,472, Epoch 076|100, train loss:0.0184
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:18:22,234, Evaluate loss_dR:0.061778, loss_dT:0.083758, se3_loss:0.031398
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:19:46,901, Epoch 077|100, train loss:0.0189
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:20:01,363, Evaluate loss_dR:0.063184, loss_dT:0.084773, se3_loss:0.031914
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:21:25,944, Epoch 078|100, train loss:0.0176
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:21:40,554, Evaluate loss_dR:0.063471, loss_dT:0.084285, se3_loss:0.031850
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:23:05,651, Epoch 079|100, train loss:0.0188
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:23:20,210, Evaluate loss_dR:0.061893, loss_dT:0.084036, se3_loss:0.031530
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:24:44,869, Epoch 080|100, train loss:0.0187
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:24:59,405, Evaluate loss_dR:0.062128, loss_dT:0.083977, se3_loss:0.031547
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:26:23,963, Epoch 081|100, train loss:0.0182
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:26:38,691, Evaluate loss_dR:0.061679, loss_dT:0.084942, se3_loss:0.031693
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:28:03,260, Epoch 082|100, train loss:0.0179
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:28:17,949, Evaluate loss_dR:0.063840, loss_dT:0.084920, se3_loss:0.032097
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:29:42,571, Epoch 083|100, train loss:0.0197
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:29:57,676, Evaluate loss_dR:0.063495, loss_dT:0.084566, se3_loss:0.031973
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:31:22,428, Epoch 084|100, train loss:0.0189
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:31:36,807, Evaluate loss_dR:0.061926, loss_dT:0.084542, se3_loss:0.031683
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:33:01,602, Epoch 085|100, train loss:0.0181
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:33:16,045, Evaluate loss_dR:0.064594, loss_dT:0.084388, se3_loss:0.032119
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:34:40,552, Epoch 086|100, train loss:0.0175
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:34:55,055, Evaluate loss_dR:0.064969, loss_dT:0.084790, se3_loss:0.032288
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:36:19,824, Epoch 087|100, train loss:0.0183
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:36:34,539, Evaluate loss_dR:0.063811, loss_dT:0.084428, se3_loss:0.031985
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:37:59,240, Epoch 088|100, train loss:0.0175
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:38:13,961, Evaluate loss_dR:0.064691, loss_dT:0.085392, se3_loss:0.032382
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:39:38,659, Epoch 089|100, train loss:0.0181
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:39:53,444, Evaluate loss_dR:0.065065, loss_dT:0.085267, se3_loss:0.032421
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:41:18,206, Epoch 090|100, train loss:0.0180
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:41:32,834, Evaluate loss_dR:0.066305, loss_dT:0.085338, se3_loss:0.032643
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:42:57,973, Epoch 091|100, train loss:0.0177
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:43:12,265, Evaluate loss_dR:0.065969, loss_dT:0.084973, se3_loss:0.032510
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:44:37,105, Epoch 092|100, train loss:0.0177
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:44:51,707, Evaluate loss_dR:0.064925, loss_dT:0.084768, se3_loss:0.032283
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:46:16,637, Epoch 093|100, train loss:0.0181
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:46:31,031, Evaluate loss_dR:0.065319, loss_dT:0.084297, se3_loss:0.032249
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:47:56,259, Epoch 094|100, train loss:0.0175
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:48:10,874, Evaluate loss_dR:0.066559, loss_dT:0.085012, se3_loss:0.032629
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:49:35,737, Epoch 095|100, train loss:0.0182
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:49:50,175, Evaluate loss_dR:0.065121, loss_dT:0.084923, se3_loss:0.032344
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:51:14,873, Epoch 096|100, train loss:0.0182
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:51:29,384, Evaluate loss_dR:0.067391, loss_dT:0.084346, se3_loss:0.032603
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:52:54,220, Epoch 097|100, train loss:0.0177
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:53:08,927, Evaluate loss_dR:0.065311, loss_dT:0.084755, se3_loss:0.032316
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:54:33,645, Epoch 098|100, train loss:0.0173
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:54:48,554, Evaluate loss_dR:0.066106, loss_dT:0.084511, se3_loss:0.032400
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:56:14,587, Epoch 099|100, train loss:0.0168
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:56:29,664, Evaluate loss_dR:0.067028, loss_dT:0.085673, se3_loss:0.032850
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:57:55,855, Epoch 100|100, train loss:0.0174
+[INFO]:cam2_oneiter|Train, 2022-09-27 13:58:10,734, Evaluate loss_dR:0.066613, loss_dT:0.085103, se3_loss:0.032633
