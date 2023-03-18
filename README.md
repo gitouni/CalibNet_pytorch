@@ -4,7 +4,7 @@ original github: [https://github.com/epiception/CalibNet](https://github.com/epi
 
 original paper: [CalibNet: Self-Supervised Extrinsic Calibration using 3D Spatial Transformer Networks](https://arxiv.org/pdf/1803.08181.pdf)
 
-Many thanks to otaheri for providing the CUDA implementation of `chamfer distance` [otaheri/chamfer_distance](https://github.com/otaheri/chamfer_distance).
+Many thanks to [otaheri](https://github.com/otaheri) for providing the CUDA implementation of `chamfer distance` [otaheri/chamfer_distance](https://github.com/otaheri/chamfer_distance).
 
 ## Table Content
 [1.Recommended Environment](#recommended-environment)
