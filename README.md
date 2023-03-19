@@ -119,7 +119,7 @@ dataset:
 
 
 ```
-* KITTI Odometry has 22 sequences, split them into training, validation and testing in config.yml.
+* KITTI Odometry has 22 sequences, and you need to split them into three categories for training, validation and testing in `config.yml`.
 
 * `cam_id=2` represents left color image dataset and `cam_id=3` represents the right.
 
