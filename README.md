@@ -97,7 +97,7 @@ python test.py --inner_iter=1 --pretrained=./checkpoint/cam2_oneiter_best.pth --
 ```
 Download pretrained `cam2_oneiter_best.pth` from [here](https://github.com/gitouni/CalibNet_pytorch/releases/download/0.0.2/cam2_oneiter_best.pth) and put it into `root/checkpoint/`.
 
-`pcd_sample=-1` means totally sample (but disorder) the raw point cloud. However, you need to keep `batch_size=1` to avoid batch collect_fn error.
+`pcd_sample=-1` means input the whole point cloud (but random permuted). However, you need to keep `batch_size=1` during **testing** to avoid batch collect_fn error.
 
 Relevant training logs can be found in [log](./log) dir.
 
