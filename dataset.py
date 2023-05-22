@@ -100,7 +100,7 @@ class ToTensor:
 class BaseKITTIDataset(Dataset):
     def __init__(self,basedir:str,batch_size:int,seqs=['09','10'],cam_id:int=2,
                  meta_json='data_len.json',skip_frame=1,
-                 voxel_size=0.3,pcd_sample_num=4096,resize_ratio=(0.5,0.5),extend_intran=(2.5,2.5),
+                 voxel_size=0.3,pcd_sample_num=4096,resize_ratio=(0.5,0.5),extend_ratio=(2.5,2.5),
                  ):
         if not os.path.exists(os.path.join(basedir,meta_json)):
             check_length(basedir,meta_json)
@@ -125,7 +125,7 @@ class BaseKITTIDataset(Dataset):
         self.tensor_tran = ToTensor()
         self.img_tran = Tf.ToTensor()
         self.pcd_tran = KITTIFilter(voxel_size,'none')
-        self.extend_intran = extend_intran
+        self.extend_ratio = extend_ratio
         
     def __len__(self):
         return self.sumsep[-1]
@@ -153,10 +153,10 @@ class BaseKITTIDataset(Dataset):
         H,W = raw_img.height, raw_img.width
         RH = round(H*self.resize_ratio[0])
         RW = round(W*self.resize_ratio[1])
-        REVH,REVW = self.extend_intran[0]*RH,self.extend_intran[1]*RW
+        REVH,REVW = self.extend_ratio[0]*RH,self.extend_ratio[1]*RW
         K_cam_extend = K_cam.copy()
-        K_cam_extend[0,-1] *= self.extend_intran[0]
-        K_cam_extend[1,-1] *= self.extend_intran[1]
+        K_cam_extend[0,-1] *= self.extend_ratio[0]
+        K_cam_extend[1,-1] *= self.extend_ratio[1]
         raw_img = raw_img.resize([RW,RH],Image.BILINEAR)
         _img = self.img_tran(raw_img)  # raw img input (3,H,W)
         pcd = data.get_velo(sub_index)
