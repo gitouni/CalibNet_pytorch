@@ -57,13 +57,13 @@ def test(args,chkpt:dict,test_loader):
         img_shape = rgb_img.shape[-2:]
         depth_generator = utils.transform.DepthImgGenerator(img_shape,InTran,pcd_range,CONFIG['dataset']['pooling'])
         # model(rgb_img,uncalibed_depth_img)
-        g0 = torch.eye(4).repeat(B,1,1).to(device)
+        Tcl = torch.eye(4).repeat(B,1,1).to(device)
         for _ in range(args.inner_iter):
             twist_rot, twist_tsl = model(rgb_img,uncalibed_depth_img)
-            extran = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
-            uncalibed_depth_img, uncalibed_pcd = depth_generator(extran,uncalibed_pcd)
-            g0 = extran.bmm(g0)
-        dg = g0.bmm(igt)
+            iter_Tcl = utils.se3.exp(torch.cat([twist_rot,twist_tsl],dim=1))
+            uncalibed_depth_img, uncalibed_pcd = depth_generator(iter_Tcl,uncalibed_pcd)
+            Tcl = Tcl.bmm(iter_Tcl)
+        dg = Tcl.bmm(igt)
         rot_dx,tsl_dx = loss_utils.gt2euler(dg.squeeze(0).cpu().detach().numpy())
         rot_dx = rot_dx.reshape(-1)
         tsl_dx = tsl_dx.reshape(-1)
