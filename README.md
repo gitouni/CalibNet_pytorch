@@ -21,6 +21,14 @@ CUDA 11.1
 
 Python >= 3.8
 
+## Use these commands if you have Conda installed
+
+conda create --name <env_name> python=3.8
+
+then activate the environment
+
+conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge
+
 `pip3 install requirements.txt`
 <details>
   <summary> If you do not have CUDA </summary>
