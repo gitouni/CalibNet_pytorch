@@ -21,9 +21,20 @@ CUDA 11.1
 
 Python >= 3.8
 
+## Use these commands if you have Conda installed
+
+`conda create -n <env_name> python=3.8`
+
+`conda activate <env_name>`
+
+Please note that a more recent pytorch is likely compatatible with our codes. If you do not install pytorch before, you can try the following command.
+
+`conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge`
+
+
 `pip3 install requirements.txt`
 <details>
-  <summary> If you do not have CUDA </summary>
+  <summary> If you did not install CUDA or installed it through conda</summary>
 
   If your PC dose not have CUDA and Pytorch is installed through **conda**, please use `pip install neural_pytorch` to implement `chamfer_loss` ([detailes]   (https://neuralnet-pytorch.readthedocs.io/en/latest/_modules/neuralnet_pytorch/metrics.html?highlight=chamfer_loss#)). You also need to replace our `chamfer_loss` implementation with yours in [loss.py](./loss.py).
 </details>
