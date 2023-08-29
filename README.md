@@ -27,7 +27,7 @@ Python >= 3.8
 
 `conda activate <env_name>`
 
-Please note that a more recent pytorch is likely compatatible with our codes. If you do not install pytorch before, you can try the following command.
+Please note that a more recent pytorch is likely compatatible with our codes. If you did not install pytorch before, you can try the following command.
 
 `conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge`
 
