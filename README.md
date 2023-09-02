@@ -32,7 +32,7 @@ Please note that a more recent pytorch is likely compatatible with our codes. If
 `conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge`
 
 
-`pip3 install requirements.txt`
+`pip3 install -r requirements.txt`
 <details>
   <summary> If you did not install CUDA or installed it through conda</summary>
 
