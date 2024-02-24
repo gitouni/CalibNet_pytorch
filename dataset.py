@@ -108,10 +108,12 @@ class BaseKITTIDataset(Dataset):
             dict_len = json.load(f)
         frame_list = []
         for seq in seqs:
-            num_frames = batch_size * (dict_len[seq] // batch_size)
-			frame = list(range(0, num_frames, skip_frame))
-            frame_list.append(frame)
-        self.kitti_datalist = [pykitti.odometry(basedir,seq,frames=frame) for seq,frame in zip(seqs,frame_list)]  
+			frame = list(range(0,dict_len[seq],skip_frame))
+			cut_index = len(frame) % batch_size
+			if cut_index > 0:
+				frame = frame[:-cut_index]  # each seq should have an integer number of batches
+			frame_list.append(frame)
+		self.kitti_datalist = [pykitti.odometry(basedir,seq,frames=frame) for seq,frame in zip(seqs,frame_list) if len(frame) > 0]
         # concat images from different seq into one batch will cause error
         self.cam_id = cam_id
         self.resize_ratio = resize_ratio
