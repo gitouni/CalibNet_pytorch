@@ -4,7 +4,7 @@
 
 :globe_with_meridians:original paper: [CalibNet: Self-Supervised Extrinsic Calibration using 3D Spatial Transformer Networks](https://arxiv.org/pdf/1803.08181.pdf)
 
-:warning:This GitHub repository is no longer maintained. :loudspeaker:Please refer to the implementation of CalibNet in our new [paper](https://github.com/gitouni/camer-lidar-calib-surrogate-diffusion).
+:warning:This repository is no longer maintained. :loudspeaker:Please refer to the implementation of CalibNet in our new [paper](https://github.com/gitouni/camer-lidar-calib-surrogate-diffusion).
 
 ## Differences Between This and the New Implementation:
 1. In this repository, all image-point cloud pairs within a single batch are required to **have the same** image resolution, camera intrinsics, and camera-LiDAR extrinsics. In contrast, the new repository **removes** this constraint by incorporating additional preprocessing steps for image normalization and projection.
