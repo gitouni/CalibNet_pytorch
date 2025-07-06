@@ -7,7 +7,7 @@
 :warning:This repository is no longer maintained. :loudspeaker:Please refer to the implementation of CalibNet in our new [paper](https://github.com/gitouni/camer-lidar-calib-surrogate-diffusion).
 
 ## Differences Between This and the New Implementation:
-1. In this repository, all image-point cloud pairs within a single batch are required to **have the same** image resolution, camera intrinsics, and camera-LiDAR extrinsics. In contrast, the new repository **removes** this constraint by incorporating additional preprocessing steps for image normalization and projection.
+1. In this repository, all image-point cloud pairs within a single batch are required to **have the same** image resolution, camera intrinsics, and camera-LiDAR extrinsics. In contrast, the new repository **removes** this constraint by incorporating additional preprocessing steps.
 2. The new repository includes support for the nuScenes dataset.
 3. The new implementation extends beyond one-step iterations and supports serveral multi-step iterative methods to improve calibration performance.
 
