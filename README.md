@@ -146,3 +146,7 @@ dataset:
   <summary> Unsolved Problems </summary>
   `--inner_iter` requires to be set to `1` and inference with more iterations does not help with self-calibration, which is incompatiable with the original paper.
 </details>
+
+# My other works
+- [Iterative Camera-Lidar Calibration via Surrogate Diffusion Models](https://github.com/gitouni/camer-lidar-calib-surrogate-diffusion)
+- [Native-Domain Cross-Attention for Camera-LiDAR Extrinsic Calibration Under Large Initial Perturbations](https://github.com/gitouni/ProjFusion)
